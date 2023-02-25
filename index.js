@@ -27,8 +27,8 @@ app.get('/manga/leercapitulo/home', function (_, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.mainpage-manga");
             var mangaList = [];
-            if(listItems.length > 75){
-                listItems = listItems.slice(0,69);
+            if(listItems.length > 60){
+                listItems = listItems.slice(0,59);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "" };
@@ -116,6 +116,7 @@ app.post('/manga/leercapitulo/mangaInfo', function (req, res) {
 
 app.post('/manga/leercapitulo/searchByGenre', function (req, res) {
     request("https://www.leercapitulo.com/genre/" + req.body.genre, function (error, _response, body) {
+        console.log("https://www.leercapitulo.com/genre/" + req.body.genre);
         if (!error) {
             var $ = cheerio.load(body);
             const listItems = $("div.mainpage-manga");
@@ -131,7 +132,7 @@ app.post('/manga/leercapitulo/searchByGenre', function (req, res) {
             var paginationList = [];
             var paginationListHtml = $(".pagination>li");
             paginationListHtml.each((_idx, el) => {
-                paginationList.push({ page: $(el).text().trim(), pageUrl: $(el).find("a").attr("href") });
+                paginationList.push({ page: $(el).text().trim(), pageUrl: $(el).find("a").attr("href")?.replace("/genre/","") });
             });
 
             res.send({ data: mangaList, paginationList: paginationList });
