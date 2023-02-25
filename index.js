@@ -25,8 +25,11 @@ app.get('/manga/leercapitulo/home', function (_, res) {
     request(url, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
-            const listItems = $("div.mainpage-manga");
+            let listItems = $("div.mainpage-manga");
             var mangaList = [];
+            if(listItems.length > 75){
+                listItems = listItems.slice(0,75);
+            }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "" };
                 manga.title = $(el).find(".manga-newest").text();
@@ -42,7 +45,6 @@ app.get('/manga/leercapitulo/home', function (_, res) {
         }
     });
 });
-
 
 app.get('/manga/leercapitulo/trends', function (_, res) {
     request(url, function (error, _response, body) {
@@ -84,7 +86,6 @@ app.get('/manga/leercapitulo/search', function (req, res) {
     });
 });
 
-
 app.post('/manga/leercapitulo/mangaInfo', function (req, res) {
     request("https://www.leercapitulo.com" + req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
@@ -112,7 +113,6 @@ app.post('/manga/leercapitulo/mangaInfo', function (req, res) {
         }
     });
 });
-
 
 app.post('/manga/leercapitulo/searchByGenre', function (req, res) {
     request("https://www.leercapitulo.com/genre/" + req.body.genre, function (error, _response, body) {
