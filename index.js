@@ -28,7 +28,7 @@ app.get('/manga/leercapitulo/home', function (_, res) {
             let listItems = $("div.mainpage-manga");
             var mangaList = [];
             if(listItems.length > 75){
-                listItems = listItems.slice(0,75);
+                listItems = listItems.slice(0,69);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "" };
