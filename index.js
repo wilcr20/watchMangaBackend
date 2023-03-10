@@ -31,7 +31,7 @@ app.get('/manga/leercapitulo/home', function (_, res) {
                 listItems = listItems.slice(0,59);
             }
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "" };
+                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".manga-newest").text();
                 manga.imageUrl = $(el).find(".cover-manga").find("img").attr("src");
                 manga.mangaUrl = $(el).find(".media-body").find("a").attr("href");
@@ -53,7 +53,7 @@ app.get('/manga/leercapitulo/trends', function (_, res) {
             const listItems = $("div.hot-manga");
             var mangaList = [];
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", date: null, mangaUrl: "" };
+                const manga = { title: "", imageUrl: "", date: null, mangaUrl: "", website: "leercapitulo"  };
                 manga.title = $(el).find(".thumbnails").find("a").attr("title");
                 manga.imageUrl = $(el).find(".thumbnails").find("a").find("img").attr("src");
                 manga.mangaUrl = $(el).find(".thumbnails").find("a").attr("href");
@@ -68,7 +68,6 @@ app.get('/manga/leercapitulo/trends', function (_, res) {
 });
 
 app.get('/manga/leercapitulo/search', function (req, res) {
-    console.log(req.query.term);
     request("https://www.leercapitulo.com/search-autocomplete?term=" + req.query.term, function (error, _response, body) {
         if (!error) {
             // body.forEach((_idx, el) => {
@@ -90,7 +89,7 @@ app.post('/manga/leercapitulo/mangaInfo', function (req, res) {
     request("https://www.leercapitulo.com" + req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
-            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "" }
+            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "leercapitulo"  }
             mangaInfo.title = $(".manga-detail").eq(0).find(".title-manga").text();
             mangaInfo.description = $(".manga-content").eq(0).find(".manga-collapse").text().trim();
             mangaInfo.imageUrl = $(".cover-detail").eq(0).find("img").attr("src");
@@ -122,7 +121,7 @@ app.post('/manga/leercapitulo/searchByGenre', function (req, res) {
             const listItems = $("div.mainpage-manga");
             var mangaList = [];
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", genres: "", mangaUrl: "" };
+                const manga = { title: "", imageUrl: "", genres: "", mangaUrl: "", website: "leercapitulo"  };
                 manga.title = $(el).find(".manga-newest").text();
                 manga.imageUrl = $(el).find(".cover-manga").find("img").attr("src");
                 manga.mangaUrl = $(el).find(".media-body").find("a").attr("href");
