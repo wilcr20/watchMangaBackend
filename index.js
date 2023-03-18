@@ -375,7 +375,7 @@ app.post('/manga/tmomanga/mangaInfo', function (req, res) {
     request(req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
-            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "tumanhwas" }
+            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "tmomanga" }
             mangaInfo.title = $(".post-title h1").eq(0).text();
             mangaInfo.description = $(".summary__content").eq(0).text().trim();
             mangaInfo.imageUrl = $(".summary_image").eq(0).find("img").attr("src");
