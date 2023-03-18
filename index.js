@@ -18,6 +18,8 @@ app.get('/', function (_req, res) {
     res.send('Hello GET');
 })
 
+
+
 app.get('/manga/leercapitulo/home', function (_, res) {
     request("https://www.leercapitulo.com/", function (error, _response, body) {
         if (!error) {
@@ -135,6 +137,7 @@ app.post('/manga/leercapitulo/searchByGenre', function (req, res) {
 
 
 
+//tumanhwas
 
 app.get('/manga/tumanhwas/home', function (_, res) {
     request("https://tumanhwas.com/", function (error, _response, body) {
@@ -224,16 +227,17 @@ app.post('/manga/tumanhwas/mangaInfo', function (req, res) {
     request(req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
-            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "leercapitulo" }
+            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "tumanhwas" }
             mangaInfo.title = $(".entry-title").eq(0).text();
             mangaInfo.description = $(".entry-content.entry-content-single").eq(0).text().trim();
             mangaInfo.imageUrl = $(".thumb").eq(0).find("img").attr("src");
 
-            var chapterListHtml = $("li.row");
-            // chapterListHtml.each((_idx, el) => {
-            //     mangaInfo.chapterList.push({ chapter: $(el).text().trim(), chapterUrl: $(el).find("a").attr("href") });
-            // });
-            mangaInfo.state =  $(".imptdt").find("i").text();
+            var chapterListHtml = $("#chapterlist ul a");
+            console.log(chapterListHtml.length)
+            chapterListHtml.each((_idx, el) => {
+                mangaInfo.chapterList.push({ chapter: $(el).text().trim(), chapterUrl: $(el).attr("href") });
+            });
+            mangaInfo.state = $(".imptdt").find("i").text();
             res.send(mangaInfo)
         }
         else {
@@ -241,6 +245,193 @@ app.post('/manga/tumanhwas/mangaInfo', function (req, res) {
         }
     });
 });
+
+
+app.get('/manga/tumanhwas/home', function (_, res) {
+    request("https://tumanhwas.com/", function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            let listItems = $("div.styletere");
+            var mangaList = [];
+            if (listItems.length > 60) {
+                listItems = listItems.slice(0, 59);
+            }
+            listItems.each((_idx, el) => {
+                let mangaUrl = $(el).find(".bsx").find("a").attr("href")
+                    .replace("https://tumanhwas.com/news/", "");
+                if (mangaUrl.includes("https://tumanhwas.com")) {
+                    const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tumanhwas" };
+                    manga.mangaUrl = mangaUrl;
+                    manga.title = $(el).find(".bsx .bigor .tt").text().trim().replace(/\n/g, '');
+                    manga.imageUrl = $(el).find(".bsx .limit").find("img").attr("src");
+                    mangaList.push(manga);
+                }
+            });
+            res.send({ data: mangaList });
+        }
+        else {
+            res.send(error);
+        }
+    });
+});
+
+
+
+
+
+
+// tmomanga
+
+app.get('/manga/tmomanga/home', function (_, res) {
+    request("https://tmomanga.com/", function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            let listItems = $("div.page-item-detail");
+            var mangaList = [];
+            if (listItems.length > 60) {
+                listItems = listItems.slice(0, 59);
+            }
+            listItems.each((_idx, el) => {
+
+                let mangaUrl = $(el).find("a").attr("href")
+                    .replace("https://tmomanga.com/capitulo/", "");
+
+                if (!mangaUrl.includes("https://tmomanga.com")) {
+                    mangaUrl = mangaUrl.split("-").slice(0, mangaUrl.split("-").length - 1).join("-");
+                    const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
+                    manga.mangaUrl = "https://tmomanga.com/manga/" + mangaUrl;
+                    manga.title = $(el).find(".manga-title-updated").text().trim().replace(/\n/g, '');
+                    manga.imageUrl = $(el).find("img").attr("src");
+                    mangaList.push(manga);
+                }
+            });
+            console.log(mangaList.length)
+            res.send({ data: mangaList });
+        }
+        else {
+            res.send(error);
+        }
+    });
+});
+
+
+app.get('/manga/tmomanga/trends', function (_, res) {
+    request("https://tmomanga.com/", function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            let listItems = $("div.page-item-detail");
+            var mangaList = [];
+            if (listItems.length > 60) {
+                listItems = listItems.slice(0, 59);
+            }
+            listItems.each((_idx, el) => {
+                let mangaUrl = $(el).find("a").attr("href")
+                    .replace("https://tmomanga.com/capitulo/", "");
+
+                if (mangaUrl.includes("https://tmomanga.com")) {
+                    const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
+                    manga.mangaUrl = mangaUrl;
+                    manga.title = $(el).find("h3").text().trim().replace(/\n/g, '');
+                    manga.imageUrl = $(el).find("img").attr("src");
+                    mangaList.push(manga);
+                }
+            });
+            res.send({ data: mangaList });
+        }
+        else {
+            res.send(error);
+        }
+    });
+});
+
+
+app.post('/manga/tmomanga/search', function (req, res) {
+    request("https://tmomanga.com/biblioteca?search=" + req.body.term, function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            let listItems = $("div.page-item-detail");
+            var mangaList = [];
+            if (listItems.length > 60) {
+                listItems = listItems.slice(0, 59);
+            }
+            listItems.each((_idx, el) => {
+                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
+                manga.mangaUrl = $(el).find("a").attr("href");
+                manga.title = $(el).find("h3").text().trim().replace(/\n/g, '');
+                manga.imageUrl = $(el).find("img").attr("src");
+                mangaList.push(manga);
+
+            });
+            res.send({ data: mangaList });
+        }
+        else {
+            res.send(body)
+        }
+    });
+});
+
+
+app.post('/manga/tmomanga/mangaInfo', function (req, res) {
+    request(req.body.mangaUrl, function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "tumanhwas" }
+            mangaInfo.title = $(".post-title h1").eq(0).text();
+            mangaInfo.description = $(".summary__content").eq(0).text().trim();
+            mangaInfo.imageUrl = $(".summary_image").eq(0).find("img").attr("src");
+
+            var chapterListHtml = $(".sub-chap.list-chap li");
+            chapterListHtml.each((_idx, el) => {
+                mangaInfo.chapterList.push({ chapter: $(el).text().trim(), chapterUrl: $(el).find("a").attr("href") });
+            });
+            var genreListHtml = $(".btn.tags_manga");
+            genreListHtml.each((_idx, el) => {
+                mangaInfo.genreList.push({ genre: $(el).text().trim() });
+            });
+            res.send(mangaInfo)
+        }
+        else {
+            res.send(error);
+        }
+    });
+});
+
+
+app.post('/manga/tmomanga/searchByGenre', function (req, res) {
+    request("https://tmomanga.com/genero/" + req.body.genre, function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            let listItems = $("div.page-item-detail");
+            var mangaList = [];
+            if (listItems.length > 60) {
+                listItems = listItems.slice(0, 59);
+            }
+            listItems.each((_idx, el) => {
+                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
+                manga.mangaUrl = $(el).find("a").attr("href");
+                manga.title = $(el).find("h3").text().trim().replace(/\n/g, '');
+                manga.imageUrl = $(el).find("img").attr("src");
+                mangaList.push(manga);
+
+            });
+
+            var paginationList = [];
+            var paginationListHtml = $(".pagination>li");
+            paginationListHtml.each((_idx, el) => {
+                let text = $(el).text().trim();
+                if(text !== "‹" && text !== "›"){
+                    paginationList.push({ page: text, pageUrl: $(el).find("a").attr("href")});
+                }
+            });
+
+            res.send({ data: mangaList, paginationList: paginationList });
+        }
+        else {
+            res.send(error);
+        }
+    });
+});
+
 
 
 var server = app.listen(3000, function () {
