@@ -73,11 +73,11 @@ app.get('/manga/leercapitulo/search', function (req, res) {
         if (!error) {
             var searchResultList = []; 
             for (let index = 0; index < listSearch.length; index++) {
-                var result = { title: "",  imageUrl: "", url: "", website: "leercapitulo" };
+                var result = { title: "",  imageUrl: "", mangaUrl: "", website: "leercapitulo" };
                 const element = listSearch[index];
                 result.title = element.value;
                 result.imageUrl = element.thumbnail;
-                result.url = element.link;
+                result.mangaUrl = element.link;
                 searchResultList.push(result);
             }
             res.send({data: searchResultList})
