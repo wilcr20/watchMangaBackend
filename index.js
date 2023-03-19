@@ -259,38 +259,6 @@ app.post('/manga/tumanhwas/mangaInfo', function (req, res) {
 });
 
 
-// app.get('/manga/tumanhwas/home', function (_, res) {
-//     request("https://tumanhwas.com/", function (error, _response, body) {
-//         if (!error) {
-//             var $ = cheerio.load(body);
-//             let listItems = $("div.styletere");
-//             var mangaList = [];
-//             if (listItems.length > 60) {
-//                 listItems = listItems.slice(0, 59);
-//             }
-//             listItems.each((_idx, el) => {
-//                 let mangaUrl = $(el).find(".bsx").find("a").attr("href")
-//                     .replace("https://tumanhwas.com/news/", "");
-//                 if (mangaUrl.includes("https://tumanhwas.com")) {
-//                     const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tumanhwas" };
-//                     manga.mangaUrl = mangaUrl;
-//                     manga.title = $(el).find(".bsx .bigor .tt").text().trim().replace(/\n/g, '');
-//                     manga.imageUrl = $(el).find(".bsx .limit").find("img").attr("src");
-//                     mangaList.push(manga);
-//                 }
-//             });
-//             res.send({ data: mangaList });
-//         }
-//         else {
-//             res.send(error);
-//         }
-//     });
-// });
-
-
-
-
-
 
 // tmomanga
 
