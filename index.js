@@ -68,8 +68,19 @@ app.get('/manga/leercapitulo/trends', function (_, res) {
 
 app.get('/manga/leercapitulo/search', function (req, res) {
     request("https://www.leercapitulo.com/search-autocomplete?term=" + req.query.term, function (error, _response, body) {
+        var listSearch = JSON.parse(body);
+        console.log(listSearch[0]);
         if (!error) {
-            res.send(body)
+            var searchResultList = []; 
+            for (let index = 0; index < listSearch.length; index++) {
+                var result = { title: "",  imageUrl: "", url: "", website: "leercapitulo" };
+                const element = listSearch[index];
+                result.title = element.value;
+                result.imageUrl = element.thumbnail;
+                result.url = element.link;
+                searchResultList.push(result);
+            }
+            res.send({data: searchResultList})
         }
         else {
             res.send(error);
@@ -203,18 +214,18 @@ app.post('/manga/tumanhwas/search', function (req, res) {
         if (!error) {
             var $ = cheerio.load(body);
             let listItems = $("div.styletere");
-            var mangaList = [];
+            var searchResultList = [];
             if (listItems.length > 60) {
                 listItems = listItems.slice(0, 59);
             }
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tumanhwas" };
+                const manga = { title: "", imageUrl: "", mangaUrl: "", website: "tumanhwas" };
                 manga.mangaUrl = $(el).find(".bsx").find("a").attr("href");;
                 manga.title = $(el).find(".bsx .bigor .tt").text().trim().replace(/\n/g, '');
                 manga.imageUrl = $(el).find(".bsx .limit").find("img").attr("src");
-                mangaList.push(manga);
+                searchResultList.push(manga);
             });
-            res.send({ data: mangaList });
+            res.send({data: searchResultList});
         }
         else {
             res.send(body)
@@ -350,19 +361,19 @@ app.post('/manga/tmomanga/search', function (req, res) {
         if (!error) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
-            var mangaList = [];
+            var searchResultList = [];
             if (listItems.length > 60) {
                 listItems = listItems.slice(0, 59);
             }
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
+                const manga = { title: "", imageUrl: "", mangaUrl: "", website: "tmomanga" };
                 manga.mangaUrl = $(el).find("a").attr("href");
                 manga.title = $(el).find("h3").text().trim().replace(/\n/g, '');
                 manga.imageUrl = $(el).find("img").attr("src");
-                mangaList.push(manga);
+                searchResultList.push(manga);
 
             });
-            res.send({ data: mangaList });
+            res.send({ data: searchResultList });
         }
         else {
             res.send(body)
