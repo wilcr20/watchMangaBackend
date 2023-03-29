@@ -31,7 +31,7 @@ app.get('/manga/leercapitulo/home', function (_, res) {
             let listItems = $("div.mainpage-manga");
             var mangaList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -161,7 +161,7 @@ app.get('/manga/tumanhwas/home', function (_, res) {
         let listItems = $("div.styletere");
         var mangaList = [];
         if (listItems.length > mangaItemsSize) {
-            let limit = mangaItemsSize-1;
+            let limit = mangaItemsSize - 1;
             listItems = listItems.slice(0, limit);
         }
         listItems.each((_idx, el) => {
@@ -191,7 +191,7 @@ app.get('/manga/tumanhwas/trends', function (_, res) {
             let listItems = $("div.styletere");
             var mangaList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -222,7 +222,7 @@ app.post('/manga/tumanhwas/search', function (req, res) {
             let listItems = $("div.styletere");
             var searchResultList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -275,7 +275,7 @@ app.get('/manga/tmomanga/home', function (_, res) {
             let listItems = $("div.page-item-detail");
             var mangaList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -308,7 +308,7 @@ app.get('/manga/tmomanga/trends', function (_, res) {
             let listItems = $("div.page-item-detail");
             var mangaList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -339,7 +339,7 @@ app.post('/manga/tmomanga/search', function (req, res) {
             let listItems = $("div.page-item-detail");
             var searchResultList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -392,7 +392,7 @@ app.post('/manga/tmomanga/searchByGenre', function (req, res) {
             let listItems = $("div.page-item-detail");
             var mangaList = [];
             if (listItems.length > mangaItemsSize) {
-                let limit = mangaItemsSize-1;
+                let limit = mangaItemsSize - 1;
                 listItems = listItems.slice(0, limit);
             }
             listItems.each((_idx, el) => {
@@ -431,7 +431,7 @@ app.get('/manga/lectortmo/home', function (_, res) {
         let listItems = $("div.element");
         var mangaList = [];
         if (listItems.length > mangaItemsSize) {
-            let limit = mangaItemsSize-1;
+            let limit = mangaItemsSize - 1;
             listItems = listItems.slice(0, limit);
         }
         listItems.each((_idx, el) => {
@@ -454,7 +454,7 @@ app.get('/manga/lectortmo/trends', function (_, res) {
         let listItems = $("div.element");
         var mangaList = [];
         if (listItems.length > mangaItemsSize) {
-            let limit = mangaItemsSize-1;
+            let limit = mangaItemsSize - 1;
             listItems = listItems.slice(0, limit);
         }
         listItems.each((_idx, el) => {
@@ -479,7 +479,7 @@ app.post('/manga/lectortmo/mangaInfo', function (req, res) {
         mangaInfo.description = $(".element-description").eq(0).text().trim();
         mangaInfo.imageUrl = $(".book-thumbnail").eq(0).attr("src");
         mangaInfo.state = $(".book-status.publishing").text().trim();
-        
+
         var chapterListHtml = $("ul.list-group.list-group-flush li.upload-link");
         chapterListHtml.each((_idx, el) => {
             mangaInfo.chapterList.push({
@@ -499,14 +499,12 @@ app.post('/manga/lectortmo/mangaInfo', function (req, res) {
 
 
 app.post('/manga/lectortmo/search', function (req, res) {
-    // req.body.term
-    console.log("https://lectortmo.com/library?_pg=1&title=" + req.body.term);
     cloudscraper.get("https://lectortmo.com/library?_pg=1&title=" + req.body.term).then((body) => {
         var $ = cheerio.load(body);
         let listItems = $("div.element");
         var mangaList = [];
         if (listItems.length > mangaItemsSize) {
-            let limit = mangaItemsSize-1;
+            let limit = mangaItemsSize - 1;
             listItems = listItems.slice(0, limit);
         }
         listItems.each((_idx, el) => {
@@ -521,6 +519,29 @@ app.post('/manga/lectortmo/search', function (req, res) {
         response.send(err)
     });
 })
+
+app.post('/manga/lectortmo/searchByGenre', function (req, res) {
+    // "https://lectortmo.com/library?order_item=likes_count&order_dir=desc&title=&_pg=1&&genders%5B%5D=
+    cloudscraper.get("https://lectortmo.com/library?order_item=likes_count&order_dir=desc&title=&_pg=1&filter_by=title&type=&demography=&status=&translation_status=&webcomic=&yonkoma=&amateur=&erotic=&genders%5B%5D=" + req.body.genre).then((body) => {
+        var $ = cheerio.load(body);
+        let listItems = $("div.element");
+        var mangaList = [];
+        if (listItems.length > mangaItemsSize) {
+            let limit = mangaItemsSize - 1;
+            listItems = listItems.slice(0, limit);
+        }
+        listItems.each((_idx, el) => {
+            const manga = { title: "", imageUrl: "", mangaUrl: "", website: "lectortmo" };
+            manga.mangaUrl = $(el).find("a").attr("href").trim();
+            manga.title = $(el).find("h4").text().trim().replace(/\n/g, '');
+            manga.imageUrl = $(el).find("style").text().trim().replace(/\n/g, '').split("('")[1].split("')")[0];
+            mangaList.push(manga);
+        });
+        res.send({ data: mangaList, paginationList: [] });
+    }, (err) => {
+        response.send(err)
+    });
+});
 
 
 
