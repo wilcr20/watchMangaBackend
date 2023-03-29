@@ -477,9 +477,9 @@ app.post('/manga/lectortmo/mangaInfo', function (req, res) {
         const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "lectortmo" }
         mangaInfo.title = $(".element-subtitle").eq(0).text();
         mangaInfo.description = $(".element-description").eq(0).text().trim();
-        mangaInfo.imageUrl = $(".book-thumbnail ").eq(0).attr("src");
+        mangaInfo.imageUrl = $(".book-thumbnail").eq(0).attr("src");
         mangaInfo.state = $(".book-status.publishing").text().trim();
-
+        
         var chapterListHtml = $("ul.list-group.list-group-flush li.upload-link");
         chapterListHtml.each((_idx, el) => {
             mangaInfo.chapterList.push({
