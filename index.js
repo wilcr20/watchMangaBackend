@@ -6,6 +6,7 @@ const cheerio = require("cheerio");
 const request = require("request");
 var cloudscraper = require('cloudscraper');
 
+const mangaItemsSize = 80;
 
 
 app.use(function (_req, res, next) {
@@ -29,8 +30,8 @@ app.get('/manga/leercapitulo/home', function (_, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.mainpage-manga");
             var mangaList = [];
-            if (listItems.length > 71) {
-                listItems = listItems.slice(0, 70);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "leercapitulo" };
@@ -158,8 +159,8 @@ app.get('/manga/tumanhwas/home', function (_, res) {
         var $ = cheerio.load(body);
         let listItems = $("div.styletere");
         var mangaList = [];
-        if (listItems.length > 60) {
-            listItems = listItems.slice(0, 59);
+        if (listItems.length > mangaItemsSize) {
+            listItems = listItems.slice(0, mangaItemsSize-1);
         }
         listItems.each((_idx, el) => {
             let mangaUrl = $(el).find(".bsx").find("a").attr("href")
@@ -187,8 +188,8 @@ app.get('/manga/tumanhwas/trends', function (_, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.styletere");
             var mangaList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 let mangaUrl = $(el).find(".bsx").find("a").attr("href")
@@ -217,8 +218,8 @@ app.post('/manga/tumanhwas/search', function (req, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.styletere");
             var searchResultList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", mangaUrl: "", website: "tumanhwas" };
@@ -269,8 +270,8 @@ app.get('/manga/tmomanga/home', function (_, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
             var mangaList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
 
@@ -301,8 +302,8 @@ app.get('/manga/tmomanga/trends', function (_, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
             var mangaList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 let mangaUrl = $(el).find("a").attr("href")
@@ -331,8 +332,8 @@ app.post('/manga/tmomanga/search', function (req, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
             var searchResultList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", mangaUrl: "", website: "tmomanga" };
@@ -383,8 +384,8 @@ app.post('/manga/tmomanga/searchByGenre', function (req, res) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
             var mangaList = [];
-            if (listItems.length > 60) {
-                listItems = listItems.slice(0, 59);
+            if (listItems.length > mangaItemsSize) {
+                listItems = listItems.slice(0, mangaItemsSize-1);
             }
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "tmomanga" };
@@ -421,8 +422,8 @@ app.get('/manga/lectortmo/home', function (_, res) {
         var $ = cheerio.load(body);
         let listItems = $("div.element");
         var mangaList = [];
-        if (listItems.length > 60) {
-            listItems = listItems.slice(0, 59);
+        if (listItems.length > mangaItemsSize) {
+            listItems = listItems.slice(0, mangaItemsSize-1);
         }
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", mangaUrl: "", website: "lectortmo" };
@@ -443,8 +444,8 @@ app.get('/manga/lectortmo/trends', function (_, res) {
         var $ = cheerio.load(body);
         let listItems = $("div.element");
         var mangaList = [];
-        if (listItems.length >= 60) {
-            listItems = listItems.slice(36, 48);
+        if (listItems.length > mangaItemsSize) {
+            listItems = listItems.slice(0, mangaItemsSize-1);
         }
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", mangaUrl: "", website: "lectortmo" };
@@ -494,8 +495,8 @@ app.post('/manga/lectortmo/search', function (req, res) {
         var $ = cheerio.load(body);
         let listItems = $("div.element");
         var mangaList = [];
-        if (listItems.length > 60) {
-            listItems = listItems.slice(0, 59);
+        if (listItems.length > mangaItemsSize) {
+            listItems = listItems.slice(0, mangaItemsSize-1);
         }
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", mangaUrl: "", website: "lectortmo" };
