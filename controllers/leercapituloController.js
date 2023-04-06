@@ -71,7 +71,6 @@ exports.search = (req, res) => {
 }
 
 exports.mangaInfo = (req, res) => {
-    // "https://www.leercapitulo.com" +
     request(req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
@@ -82,7 +81,7 @@ exports.mangaInfo = (req, res) => {
 
             var chapterListHtml = $("li.row");
             chapterListHtml.each((_idx, el) => {
-                mangaInfo.chapterList.push({ chapter: $(el).text().trim(), chapterUrl: $(el).find("a").attr("href") });
+                mangaInfo.chapterList.push({ chapter: $(el).text().trim(), chapterUrl: "https://www.leercapitulo.com" + $(el).find("a").attr("href") });
             });
 
             var genreListHtml = $(".description-update>a");
