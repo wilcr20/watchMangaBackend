@@ -15,8 +15,8 @@ exports.home = (_, res) => {
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".manga-newest").text();
-                manga.imageUrl = $(el).find(".cover-manga").find("img").attr("src");
-                manga.mangaUrl = $(el).find(".media-body").find("a").attr("href");
+                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".cover-manga").find("img").attr("src");
+                manga.mangaUrl = "https://www.leercapitulo.com" + $(el).find(".media-body").find("a").attr("href");
                 manga.date = $(el).find(".hotup-list").children("i").eq(0).text();
                 mangaList.push(manga);
             });
@@ -37,8 +37,8 @@ exports.trends = (_, res) => {
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: null, mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".thumbnails").find("a").attr("title");
-                manga.imageUrl = $(el).find(".thumbnails").find("a").find("img").attr("src");
-                manga.mangaUrl = $(el).find(".thumbnails").find("a").attr("href");
+                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".thumbnails").find("a").find("img").attr("src");
+                manga.mangaUrl = "https://www.leercapitulo.com" + $(el).find(".thumbnails").find("a").attr("href");
                 mangaList.push(manga);
             });
             res.send({ data: mangaList });
@@ -58,8 +58,8 @@ exports.search = (req, res) => {
                 var result = { title: "", imageUrl: "", mangaUrl: "", website: "leercapitulo" };
                 const element = listSearch[index];
                 result.title = element.value;
-                result.imageUrl = element.thumbnail;
-                result.mangaUrl = element.link;
+                result.imageUrl = "https://www.leercapitulo.com" + element.thumbnail;
+                result.mangaUrl = "https://www.leercapitulo.com" + element.link;
                 searchResultList.push(result);
             }
             res.send({ data: searchResultList })
@@ -71,13 +71,14 @@ exports.search = (req, res) => {
 }
 
 exports.mangaInfo = (req, res) => {
-    request("https://www.leercapitulo.com" + req.body.mangaUrl, function (error, _response, body) {
+    // "https://www.leercapitulo.com" +
+    request(req.body.mangaUrl, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
             const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "leercapitulo" }
             mangaInfo.title = $(".manga-detail").eq(0).find(".title-manga").text();
             mangaInfo.description = $(".manga-content").eq(0).find(".manga-collapse").text().trim();
-            mangaInfo.imageUrl = $(".cover-detail").eq(0).find("img").attr("src");
+            mangaInfo.imageUrl = "https://www.leercapitulo.com" + $(".cover-detail").eq(0).find("img").attr("src");
 
             var chapterListHtml = $("li.row");
             chapterListHtml.each((_idx, el) => {
@@ -107,8 +108,8 @@ exports.searchByGenre = (req, res) => {
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", genres: "", mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".manga-newest").text();
-                manga.imageUrl = $(el).find(".cover-manga").find("img").attr("src");
-                manga.mangaUrl = $(el).find(".media-body").find("a").attr("href");
+                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".cover-manga").find("img").attr("src");
+                manga.mangaUrl = "https://www.leercapitulo.com" + $(el).find(".media-body").find("a").attr("href");
                 manga.genres = $(el).find(".descripfix").children().remove().end().text().replace(/\n/g, '').trim();
                 mangaList.push(manga);
             });
