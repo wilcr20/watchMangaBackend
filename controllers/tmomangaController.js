@@ -117,7 +117,8 @@ exports.mangaInfo = (req, res) => {
 }
 
 exports.searchByGenre = (req, res) => {
-    request("https://tmomanga.com/genero/" + req.body.genre, function (error, _response, body) {
+    // "https://tmomanga.com/genero/" + 
+    request(req.body.genre, function (error, _response, body) {
         if (!error) {
             var $ = cheerio.load(body);
             let listItems = $("div.page-item-detail");
