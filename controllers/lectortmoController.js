@@ -75,7 +75,7 @@ exports.mangaInfo = (req, res) => {
         const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "lectortmo" }
         mangaInfo.title = $(".element-subtitle").eq(0).text();
         mangaInfo.description = $(".element-description").eq(0).text().trim();
-        mangaInfo.imageUrl = $(".row .book-thumbnail").attr("src");
+        mangaInfo.imageUrl = $(".row .book-thumbnail").eq(-1).attr("src");
         mangaInfo.state = $(".book-status.publishing").text().trim();
 
         var chapterListHtml = $("ul.list-group.list-group-flush li.upload-link");
