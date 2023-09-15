@@ -5,11 +5,8 @@ const animeytController = require("../controllers/animeytController");
 
 router.get("/home", animeytController.home);
 router.get("/homeSeeMore", animeytController.homeSeeMore);
-
-// router.get("/trends", lectortmoController.trends);
-// router.post("/search", lectortmoController.search);
-// router.post("/mangaInfo", lectortmoController.mangaInfo);
-// router.post("/searchByGenre", lectortmoController.searchByGenre);
-
+router.post("/getAnimeInfo", animeytController.getAnimeInfo);
+router.post("/SeeChapter", animeytController.SeeChapter);
+router.post("/search", animeytController.search);
 
 module.exports = router;
