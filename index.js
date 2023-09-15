@@ -1,8 +1,14 @@
 const express = require('express');
+
+// manga
 const leercapituloRuter = require("./routers/leercapituloRouter");
 const tumanhwasRouter = require("./routers/tumanhwasRouter");
 const tmomangaRouter = require("./routers/tmomangaRouter");
 const lectortmoRouter = require("./routers/lectortmoRouter");
+
+// anime
+const animeflvRouter = require("./routers/animeflvRouter");
+const animeytRouter = require("./routers/animeytRouter");
 
 const app = express();
 
@@ -16,11 +22,15 @@ app.use(function (_req, res, next) {
     next();
 });
 
-
+// manga 
 app.use("/manga/leercapitulo", leercapituloRuter);
 app.use("/manga/tumanhwas/", tumanhwasRouter);
 app.use("/manga/tmomanga/", tmomangaRouter);
 app.use("/manga/lectortmo/", lectortmoRouter);
+
+// anime
+app.use("/anime/animeflv", animeflvRouter )
+app.use("/anime/animeyt", animeytRouter )
 
 app.get('/', function (_req, res) {
     console.log("Got a GET request for the homepage");
