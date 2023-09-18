@@ -65,15 +65,29 @@ exports.getAnimeInfo = (req, res) => {
 exports.SeeChapter = (req, res) => {
     cloudscraper.get(req.body.animeUrl).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", date:"", description: "", defaultPlayer: "", servers: [] , website: "animeyt" }
-        animeInfo.defaultPlayer= "https://animeyt.es/"+ $("div.video-content").find("iframe").attr("src")
+        const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: "animeyt" }
+        animeInfo.defaultPlayer = "https://animeyt.es/" + $("div.video-content").find("iframe").attr("src")
         animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
         animeInfo.date = $("span.year span.updated").text();
         var animeInfoData = $("div.ts-breadcrumb ol li");
-        animeInfoData.each((idx, el)=>{
-            if(idx == 1){
+        var serversData = $("select.mirror option");
+        animeInfoData.each((idx, el) => {
+            if (idx == 1) {
                 animeInfo.animeUrl = $(el).find("a").attr("href");
                 animeInfo.title = $(el).find("a span").text();
+            }
+        })
+        serversData.each((idx, el) => {
+            if (idx > 0) {
+                let iframeHtml = atob($(el).attr("value"));
+                let url = $(iframeHtml).attr("src");
+                let serverName = $(el).text().trim().replace(/\n/g, '');
+                animeInfo.servers.push(
+                    {
+                        "server": serverName,
+                        "url ":   serverName == "Omega" ? "https://animeyt.es/" + url : url
+                    }
+                )
             }
         })
         res.send(animeInfo)
