@@ -8,5 +8,8 @@ router.get("/homeSeeMore", animeytController.homeSeeMore);
 router.post("/getAnimeInfo", animeytController.getAnimeInfo);
 router.post("/SeeChapter", animeytController.SeeChapter);
 router.post("/search", animeytController.search);
+router.get("/recomendation", animeytController.recomendation);
+router.get("/ongoing", animeytController.ongoing);
+
 
 module.exports = router;
