@@ -117,10 +117,18 @@ exports.search = (req, res) => {
 exports.recomendation = (_, res) => {
     cloudscraper.get("https://animeyt.es/random").then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
+        const animeInfo = { title: "", animeUrl: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
         animeInfo.imageUrl = $("div.thumb").find("img").attr("data-src");
+
+        let breadcrumbHTML = $(".ts-breadcrumb ol li")
+        breadcrumbHTML.each((idx, el) => {
+            if (idx == 1) {
+                animeInfo.animeUrl = $(el).find("a").attr("href");
+            }
+        })
+
         var chapterListHtml = $("div.eplister ul li");
         chapterListHtml.each((_idx, el) => {
             animeInfo.chapterList.push({
@@ -164,21 +172,6 @@ exports.ongoing = (_, res) => {
                 });
         });
 
-
-        // animeList.description = $("div.entry-content").eq(0).text().trim();
-        // animeList.imageUrl = $("div.thumb").find("img").attr("data-src");
-        // var chapterListHtml = $("div.eplister ul li");
-        // chapterListHtml.each((_idx, el) => {
-        //     animeList.chapterList.push({
-        //         chapter: $(el).find(".epl-title").text().trim(),
-        //         date: $(el).find(".epl-date").text().trim(),
-        //         chapterUrl: $(el).find("a").attr("href")
-        //     });
-        // });
-        // var genreListHtml = $("div.genxed a");
-        // genreListHtml.each((_idx, el) => {
-        //     animeList.genreList.push({ genre: $(el).text().trim() });
-        // });
         res.send(animeList)
     }, (err) => {
         response.send(err)
