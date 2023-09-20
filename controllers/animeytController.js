@@ -177,3 +177,23 @@ exports.ongoing = (_, res) => {
         response.send(err)
     })
 }
+
+exports.directory = (req, res) => {
+    cloudscraper.get(req.body.url).then((body) => {
+        var $ = cheerio.load(body);
+        let prevButton = $("a.l").eq(0).attr("href");
+        let nextButton = $("a.r").eq(0).attr("href");
+        let listItems = $("div.listupd article.bs");
+        var animeList = [];
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+            anime.url = $(el).find("a").attr("href").trim();
+            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+            animeList.push(anime);
+        });
+        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton  } });
+    }, (err) => {
+        response.send(err)
+    })
+}

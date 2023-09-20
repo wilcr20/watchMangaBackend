@@ -10,6 +10,6 @@ router.post("/SeeChapter", animeytController.SeeChapter);
 router.post("/search", animeytController.search);
 router.get("/recomendation", animeytController.recomendation);
 router.get("/ongoing", animeytController.ongoing);
-
+router.post("/directory", animeytController.directory)
 
 module.exports = router;
