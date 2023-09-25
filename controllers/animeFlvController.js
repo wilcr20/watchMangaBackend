@@ -3,7 +3,7 @@ const cloudscraper = require('cloudscraper');
 
 exports.search = (req, res) => {
     var options = {
-        uri:  req.body.term, // "https://www3.animeflv.net/browse?q=" +
+        uri: req.body.term, // "https://www3.animeflv.net/browse?q=" +
         timeout: 10000
     }
     cloudscraper.get(options).then((body) => {
@@ -84,9 +84,16 @@ exports.SeeChapter = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: "animeflv" } 
+        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: "animeflv" }
         let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
-        animeInfo.title = $("div.CapiTop h1").text().split("Episodio")[0];
+        var breadcrumbHtml = $("nav.Brdcrmb a");
+        breadcrumbHtml.each((idx, el) => {
+            if (idx == 1) {
+                animeInfo.animeUrl = "https://www3.animeflv.net" + $(el).attr("href");
+                animeInfo.title = $(el).text();
+            }
+        })
+
         for (let index = 0; index < listServer.length; index++) {
             const server = listServer[index];
             animeInfo.servers.push(
@@ -96,7 +103,7 @@ exports.SeeChapter = (req, res) => {
                 }
             )
         }
-        animeInfo.defaultPlayer =  animeInfo.servers[0].url;
+        animeInfo.defaultPlayer = animeInfo.servers[0].url;
         res.send(animeInfo)
     }, (err) => {
         res.send(err)
