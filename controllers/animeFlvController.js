@@ -86,7 +86,7 @@ exports.SeeChapter = (req, res) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: "animeflv" } 
         let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
-        animeInfo.title = $("div.CapiTop h1").text();
+        animeInfo.title = $("div.CapiTop h1").text().split("Episodio")[0];
         for (let index = 0; index < listServer.length; index++) {
             const server = listServer[index];
             animeInfo.servers.push(
