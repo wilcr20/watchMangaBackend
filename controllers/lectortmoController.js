@@ -21,7 +21,7 @@ exports.home = (_, res) => {
         });
         res.send({ data: mangaList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -43,7 +43,7 @@ exports.trends = (_, res) => {
         });
         res.send({ data: mangaList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -65,7 +65,7 @@ exports.search = (req, res) => {
         });
         res.send({ data: mangaList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     });
 }
 
@@ -91,7 +91,7 @@ exports.mangaInfo = (req, res) => {
         });
         res.send(mangaInfo)
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -114,6 +114,6 @@ exports.searchByGenre = (req, res) => {
         });
         res.send({ data: mangaList, paginationList: [] });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     });
 }

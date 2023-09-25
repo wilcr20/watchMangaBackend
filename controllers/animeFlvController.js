@@ -12,7 +12,7 @@ exports.search = (req, res) => {
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $("ul.pagination li:not(.active)");
+        var buttonsNavigationHTMl = $("div.NvCnAnm ul.pagination li");
         listItems.each((_idx, el) => {
             var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
             anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
@@ -34,7 +34,43 @@ exports.search = (req, res) => {
 
         res.send({ data: animeList, buttons: listNavigation });
     }, (err) => {
-        response.send(err)
+        res.send(err)
+    });
+}
+
+
+exports.filterSearch = (req, res) => {
+    var options = {
+        uri: req.body.url, 
+        timeout: 10000
+    }
+    cloudscraper.get(options).then((body) => {
+        var $ = cheerio.load(body);
+        let listItems = $("ul.ListAnimes article.Anime");
+        var animeList = [];
+        var listNavigation = [];
+
+        var buttonsNavigationHTMl = $("ul.pagination li:not(.active)");
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
+            anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
+            anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("figure img").attr("src");
+            animeList.push(anime);
+        });
+        buttonsNavigationHTMl.each((_idx, el) => {
+            var button = { display: null, url: null };
+            let display = $(el).find("a").text().trim().replace(/\n/g, '');
+            if (display !== "«" && display !== "»" && display != "") {
+                button.display = display;
+                button.url = "https://www3.animeflv.net" + $(el).find("a").attr("href");
+                listNavigation.push(button);
+            }
+        });
+
+        res.send({ data: animeList, buttons: listNavigation });
+    }, (err) => {
+        res.send(err)
     });
 }
 

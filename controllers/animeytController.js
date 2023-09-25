@@ -15,7 +15,7 @@ exports.home = (_, res) => {
         });
         res.send({ data: animeList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -33,7 +33,7 @@ exports.homeSeeMore = (_, res) => {
         });
         res.send({ data: animeList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -58,7 +58,7 @@ exports.getAnimeInfo = (req, res) => {
         });
         res.send(animeInfo)
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -110,7 +110,7 @@ exports.search = (req, res) => {
         });
         res.send({ data: animeList });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     });
 }
 
@@ -143,7 +143,7 @@ exports.recomendation = (_, res) => {
         });
         res.send(animeInfo)
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -174,7 +174,7 @@ exports.ongoing = (_, res) => {
 
         res.send(animeList)
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
 
@@ -194,6 +194,6 @@ exports.directory = (req, res) => {
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton  } });
     }, (err) => {
-        response.send(err)
+        res.send(err)
     })
 }
