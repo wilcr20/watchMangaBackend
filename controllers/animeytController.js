@@ -161,7 +161,7 @@ exports.ongoing = (_, res) => {
                 var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
                 anime.url = $(el).find("a").attr("href").trim();
                 anime.title = $(el).find("a").attr("title").trim()?.replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src")?.replace("?h=300", "");
+                anime.imageUrl = $(el).find("div.limit img").attr("data-src")?.replace("?resize=247,350", "");
                 animeListByDay.push(anime);
             });
 
