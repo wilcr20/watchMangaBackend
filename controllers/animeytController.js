@@ -152,16 +152,16 @@ exports.ongoing = (_, res) => {
         var $ = cheerio.load(body);
         const animeList = { title: "", sections: [], website: "animeyt" }
         animeList.title = $(".releases h1").text();
-        let sectionbyDaysHTML = $(".page .bixbox");
+        let sectionbyDaysHTML = $("div.postbody div.schedulepage");
         sectionbyDaysHTML.each((idx, el) => {
 
-            let listItems = $(el).find(".excstf article");
+            let listItems = $(el).find("div.bsx");
             let animeListByDay = [];
             listItems.each((_idx, el) => {
                 var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
                 anime.url = $(el).find("a").attr("href").trim();
-                anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?h=300", "");
+                anime.title = $(el).find("a").attr("title").trim()?.replace(/\n/g, '');
+                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src")?.replace("?h=300", "");
                 animeListByDay.push(anime);
             });
 
