@@ -7,11 +7,14 @@ exports.home = (_, res) => {
         let listItems = $("div.excstf article.styletwo");
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-            anime.url = $(el).find("a").attr("href").trim();
-            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
-            animeList.push(anime);
+            let type = $(el).find("div.limit div.bt span.epx").text();
+            if (type != "Próximamente") {
+                var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+                anime.url = $(el).find("a").attr("href").trim();
+                anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
+                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+                animeList.push(anime);
+            }
         });
         res.send({ data: animeList });
     }, (err) => {
@@ -25,11 +28,15 @@ exports.homeSeeMore = (_, res) => {
         let listItems = $("div.excstf article.styletwo");
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-            anime.url = $(el).find("a").attr("href").trim();
-            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
-            animeList.push(anime);
+            let type = $(el).find("div.limit div.bt span.epx").text();
+            if (type != "Próximamente") {
+                var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+                anime.url = $(el).find("a").attr("href").trim();
+                anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
+                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+                animeList.push(anime);
+            }
+
         });
         res.send({ data: animeList });
     }, (err) => {
@@ -192,7 +199,7 @@ exports.directory = (req, res) => {
             anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
             animeList.push(anime);
         });
-        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton  } });
+        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
     }, (err) => {
         res.send(err)
     })
