@@ -204,3 +204,24 @@ exports.directory = (req, res) => {
         res.send(err)
     })
 }
+
+exports.directoryLatin = (req, res) => {
+    //"https://animeyt.es/tv/?status=&type=&sub=dub&order=update"
+    cloudscraper.get(req.body.url).then((body) => {
+        var $ = cheerio.load(body);
+        let prevButton = $("a.l").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.l").eq(0).attr("href") : undefined;
+        let nextButton = $("a.r").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.r").eq(0).attr("href") : undefined;
+        let listItems = $("div.listupd article.bs");
+        var animeList = [];
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+            anime.url = $(el).find("a").attr("href").trim();
+            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=247,350", "");
+            animeList.push(anime);
+        });
+        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
+    }, (err) => {
+        res.send(err)
+    })
+}

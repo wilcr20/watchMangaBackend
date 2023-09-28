@@ -11,5 +11,6 @@ router.post("/search", animeytController.search);
 router.get("/recomendation", animeytController.recomendation);
 router.get("/ongoing", animeytController.ongoing);
 router.post("/directory", animeytController.directory)
+router.post("/directoryLatin", animeytController.directoryLatin)
 
 module.exports = router;
