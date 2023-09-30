@@ -92,7 +92,7 @@ exports.SeeChapter = (req, res) => {
                 animeInfo.servers.push(
                     {
                         "server": serverName,
-                        "url": serverName == "Omega" ? "https://animeyt.es/" + url : url
+                        "url": serverName == "Omega" || serverName == "Lions" ? "https://animeyt.es/" + url : url
                     }
                 )
             }
