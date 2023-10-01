@@ -50,7 +50,7 @@ exports.getAnimeInfo = (req, res) => {
         const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb").find("img").attr("data-src");
+        animeInfo.imageUrl = $("div.thumb").find("img").attr("data-src").replace("?resize=247,350", "");
         var chapterListHtml = $("div.eplister ul li");
         chapterListHtml.each((_idx, el) => {
             animeInfo.chapterList.push({
@@ -89,12 +89,24 @@ exports.SeeChapter = (req, res) => {
                 let iframeHtml = atob($(el).attr("value"));
                 let url = $(iframeHtml).attr("src");
                 let serverName = $(el).text().trim().replace(/\n/g, '');
-                animeInfo.servers.push(
-                    {
-                        "server": serverName,
-                        "url": serverName == "Omega" || serverName == "Lions" ? "https://animeyt.es/" + url : url
-                    }
-                )
+                let urlFixed = "";
+                if (serverName == "Omega" || serverName == "Lions") {
+                    urlFixed = "https://animeyt.es/" + url;
+                } else if (url.includes("ok.ru")) {
+                    urlFixed = "https:" + url;
+                }
+                else {
+                    urlFixed = url;
+                }
+                if (!urlFixed.includes("short.ink")) {
+                    animeInfo.servers.push(
+                        {
+                            "server": serverName,
+                            "url": urlFixed
+                        }
+                    )
+                }
+
             }
         })
         res.send(animeInfo)
