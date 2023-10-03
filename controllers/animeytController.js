@@ -73,7 +73,8 @@ exports.SeeChapter = (req, res) => {
     cloudscraper.get(req.body.animeUrl).then((body) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: "animeyt" }
-        animeInfo.defaultPlayer = "https://animeyt.es/" + $("div.video-content").find("iframe").attr("src")
+        let defaultIframeUrl = $("div.video-content").find("iframe").attr("src")
+        animeInfo.defaultPlayer =  defaultIframeUrl.includes("http") ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
         animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
         animeInfo.date = $("span.year span.updated").text();
         var animeInfoData = $("div.ts-breadcrumb ol li");
@@ -90,9 +91,9 @@ exports.SeeChapter = (req, res) => {
                 let url = $(iframeHtml).attr("src");
                 let serverName = $(el).text().trim().replace(/\n/g, '');
                 let urlFixed = "";
-                if (serverName == "Omega" || serverName == "Lions") {
+                if ((serverName == "Omega" || serverName == "Lions") && !url.includes("http") ) {
                     urlFixed = "https://animeyt.es/" + url;
-                } else if (url.includes("ok.ru") || url.includes("sendvid") ) {
+                } else if (url.includes("ok.ru") || url.includes("sendvid")) {
                     urlFixed = "https:" + url;
                 }
                 else {
