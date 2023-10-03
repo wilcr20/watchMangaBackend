@@ -92,7 +92,7 @@ exports.SeeChapter = (req, res) => {
                 let urlFixed = "";
                 if (serverName == "Omega" || serverName == "Lions") {
                     urlFixed = "https://animeyt.es/" + url;
-                } else if (url.includes("ok.ru")) {
+                } else if (url.includes("ok.ru") || url.includes("sendvid") ) {
                     urlFixed = "https:" + url;
                 }
                 else {
