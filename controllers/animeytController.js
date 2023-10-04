@@ -74,7 +74,7 @@ exports.SeeChapter = (req, res) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: "animeyt" }
         let defaultIframeUrl = $("div.video-content").find("iframe").attr("src")
-        animeInfo.defaultPlayer =  defaultIframeUrl.includes("http") ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
+        animeInfo.defaultPlayer = defaultIframeUrl.includes("http") ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
         animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
         animeInfo.date = $("span.year span.updated").text();
         var animeInfoData = $("div.ts-breadcrumb ol li");
@@ -91,23 +91,26 @@ exports.SeeChapter = (req, res) => {
                 let url = $(iframeHtml).attr("src");
                 let serverName = $(el).text().trim().replace(/\n/g, '');
                 let urlFixed = "";
-                if ((serverName == "Omega" || serverName == "Lions") && !url.includes("http") ) {
-                    urlFixed = "https://animeyt.es/" + url;
-                } else if (url.includes("ok.ru") || url.includes("sendvid")) {
-                    urlFixed = "https:" + url;
+                if (url) {
+                    if ((serverName == "Omega" || serverName == "Lions") && !url.includes("http")) {
+                        urlFixed = "https://animeyt.es/" + url;
+                    } else if (url.includes("ok.ru") || url.includes("sendvid")) {
+                        urlFixed = "https:" + url;
+                    }
+                    else {
+                        urlFixed = url;
+                    }
+                    urlFixed = urlFixed.replace("http:", "https:");
+                    if (!urlFixed.includes("short.ink") && serverName != "Netu") {
+                        animeInfo.servers.push(
+                            {
+                                "server": serverName,
+                                "url": urlFixed
+                            }
+                        )
+                    }
                 }
-                else {
-                    urlFixed = url;
-                }
-                urlFixed = urlFixed.replace("http:", "https:");
-                if (!urlFixed.includes("short.ink") && serverName != "Netu" ) {
-                    animeInfo.servers.push(
-                        {
-                            "server": serverName,
-                            "url": urlFixed
-                        }
-                    )
-                }
+
 
             }
         })
