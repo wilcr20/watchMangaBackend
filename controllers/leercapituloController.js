@@ -15,7 +15,7 @@ exports.home = (_, res) => {
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".manga-newest").text();
-                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".cover-manga").find("img").attr("src");
+                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".cover-manga").find("img").attr("data-src");
                 manga.mangaUrl = "https://www.leercapitulo.com" + $(el).find(".media-body").find("a").attr("href");
                 manga.date = $(el).find(".hotup-list").children("i").eq(0).text();
                 mangaList.push(manga);
@@ -37,7 +37,7 @@ exports.trends = (_, res) => {
             listItems.each((_idx, el) => {
                 const manga = { title: "", imageUrl: "", date: null, mangaUrl: "", website: "leercapitulo" };
                 manga.title = $(el).find(".thumbnails").find("a").attr("title");
-                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".thumbnails").find("a").find("img").attr("src");
+                manga.imageUrl = "https://www.leercapitulo.com" + $(el).find(".thumbnails").find("a").find("img").attr("data-src");
                 manga.mangaUrl = "https://www.leercapitulo.com" + $(el).find(".thumbnails").find("a").attr("href");
                 mangaList.push(manga);
             });
