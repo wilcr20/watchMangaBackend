@@ -101,9 +101,10 @@ exports.SeeChapter = (req, res) => {
                         urlFixed = url;
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
-                    if (!urlFixed.includes("short.ink") && (serverName != "Netu" && !serverName.includes("Kraken") 
-                    && !serverName.includes("Fembed") 
-                    && !serverName.includes("Send")  )) {
+                    if (!urlFixed.includes("short.ink") && (serverName != "Netu" && !serverName.includes("Kraken")
+                        && !serverName.includes("Fembed")
+                        && !serverName.includes("Stream")
+                        && !serverName.includes("Send"))) {
                         animeInfo.servers.push(
                             {
                                 "server": serverName,
