@@ -75,7 +75,8 @@ exports.mangaInfo = (req, res) => {
             mangaInfo.genreList.push({ genre: $(el).text().trim() });
         });
         mangaInfo.state = $(".summary-content").last().text().replace(/\n/g, '');
-        cloudscraper.post(req.body.url + "ajax/chapters/").then((body) => {
+        console.log();
+        cloudscraper.post(req.body.mangaUrl + "ajax/chapters/").then((body) => {
             let $ = cheerio.load(body);
             var chapterListHtml = $("div.listing-chapters_wrap li.wp-manga-chapter ");
             chapterListHtml.each((_idx, el) => {
