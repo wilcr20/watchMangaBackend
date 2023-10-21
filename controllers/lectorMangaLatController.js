@@ -64,7 +64,7 @@ exports.search = (req, res) => {
 }
 
 exports.mangaInfo = (req, res) => {
-    cloudscraper.get(req.body.url).then((body) => {
+    cloudscraper.get(req.body.mangaUrl).then((body) => {
         var $ = cheerio.load(body);
         const mangaInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "lectormangaLat" }
         mangaInfo.title = $("div.post-title").eq(0).text().trim();
