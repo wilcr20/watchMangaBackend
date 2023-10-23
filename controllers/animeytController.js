@@ -104,7 +104,7 @@ exports.SeeChapter = (req, res) => {
                     if (!urlFixed.includes("short.ink") && (serverName != "Netu" && !serverName.includes("Kraken")
                         && !serverName.includes("Fembed")
                         && !serverName.includes("Stream")
-                        && !serverName.includes("Send"))) {
+                        )) {
                         animeInfo.servers.push(
                             {
                                 "server": serverName,
