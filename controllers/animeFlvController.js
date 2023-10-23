@@ -87,20 +87,19 @@ exports.getAnimeInfo = (req, res) => {
         animeInfo.imageUrl = "https://www3.animeflv.net" + $("div.AnimeCover").find("figure img").attr("src");
         var relatedAnimeList = $("ul.ListAnmRel li");
         if (relatedAnimeList && relatedAnimeList.length > 0) {
-            console.log(relatedAnimeList.length);
-
             relatedAnimeList.each((idx, el) => {
-                let type = "";
-                if(relatedAnimeList.length == 1){
-                    type = ' (Secuela)';
-                }else{
-                    console.log("s");
-                    type = idx == 0 ? ' (Precuela)' : ' (Secuela)';
-                }
+                let type = $(el).text();
+                // if(relatedAnimeList.length == 1){
+                //     type = ' (Secuela)';
+                // }else{
+                //     console.log("s");
+                //     type = idx == 0 ? ' (Precuela)' : ' (Secuela)';
+                // }
+                console.log("text  "+ type)
                 animeInfo.related.push(
                     {
                         url: "https://www3.animeflv.net" + $(el).find("a").attr("href"),
-                        name: $(el).find("a").text().trim() + type
+                        name:  type
                     });
             });
         }
