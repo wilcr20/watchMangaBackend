@@ -41,7 +41,7 @@ exports.search = (req, res) => {
 
 exports.filterSearch = (req, res) => {
     var options = {
-        uri: req.body.url, 
+        uri: req.body.url,
         timeout: 10000
     }
     cloudscraper.get(options).then((body) => {
@@ -81,10 +81,29 @@ exports.getAnimeInfo = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeflv" }
+        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: "animeflv" }
         animeInfo.title = $("div.Container h1").text();
         animeInfo.description = $("div.Description").text().trim();
         animeInfo.imageUrl = "https://www3.animeflv.net" + $("div.AnimeCover").find("figure img").attr("src");
+        var relatedAnimeList = $("ul.ListAnmRel li");
+        if (relatedAnimeList && relatedAnimeList.length > 0) {
+            console.log(relatedAnimeList.length);
+
+            relatedAnimeList.each((idx, el) => {
+                let type = "";
+                if(relatedAnimeList.length == 1){
+                    type = ' (Secuela)';
+                }else{
+                    console.log("s");
+                    type = idx == 0 ? ' (Precuela)' : ' (Secuela)';
+                }
+                animeInfo.related.push(
+                    {
+                        url: "https://www3.animeflv.net" + $(el).find("a").attr("href"),
+                        name: $(el).find("a").text().trim() + type
+                    });
+            });
+        }
         try {
             let listChapters = JSON.parse(body.split("var episodes =")[1]?.split("var last_seen = 0")[0].trim().replace(";", ""))
             for (let index = 0; index < listChapters.length; index++) {
@@ -97,7 +116,7 @@ exports.getAnimeInfo = (req, res) => {
 
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
 
         var genreListHtml = $("nav.Nvgnrs a");
@@ -153,7 +172,7 @@ exports.movies = (req, res) => {
         timeout: 10000
     }
     cloudscraper.get(options).then((body) => {
-        
+
         var $ = cheerio.load(body);
         let listItems = $("ul.ListAnimes article.Anime");
         var animeList = [];
