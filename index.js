@@ -6,6 +6,7 @@ const tumanhwasRouter = require("./routers/tumanhwasRouter");
 const tmomangaRouter = require("./routers/tmomangaRouter");
 const lectortmoRouter = require("./routers/lectortmoRouter");
 const lectorMangaLatRouter = require("./routers/lectorMangaLatRouter");
+const manwhaLatinoRouter = require("./routers/manwhaLatinoRouter");
 
 // anime
 const animeflvRouter = require("./routers/animeflvRouter");
@@ -29,6 +30,7 @@ app.use("/manga/tumanhwas/", tumanhwasRouter);
 app.use("/manga/tmomanga/", tmomangaRouter);
 app.use("/manga/lectortmo/", lectortmoRouter);
 app.use("/manga/lectormangalat/", lectorMangaLatRouter);
+app.use("/manga/manwhaLatino/", manwhaLatinoRouter)
 
 // anime
 app.use("/anime/animeflv", animeflvRouter )
