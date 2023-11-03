@@ -110,7 +110,7 @@ exports.searchByGenre = (req, res) => {
             const listItems = $("div.c-tabs-item .page-item-detail");
             var mangaList = [];
             listItems.each((_idx, el) => {
-                const manga = { title: "", imageUrl: "", mangaUrl: "", website: "lectormangaLat" };
+                const manga = { title: "", imageUrl: "", mangaUrl: "", website: "manwhaLatino" };
 
                 manga.title = $(el).find("h3").text().trim();
                 manga.imageUrl = $(el).find("div.item-thumb.c-image-hover").find("img").attr("data-src").replace("aio.", "").replace("-175x238", "");
