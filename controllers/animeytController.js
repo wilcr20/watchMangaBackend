@@ -74,7 +74,7 @@ exports.SeeChapter = (req, res) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: "animeyt" }
         let defaultIframeUrl = $("div.video-content").find("iframe").attr("src")
-        animeInfo.defaultPlayer = defaultIframeUrl.includes("http") ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
+        // animeInfo.defaultPlayer = defaultIframeUrl.includes("http")  ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
         animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
         animeInfo.date = $("span.year span.updated").text();
         var animeInfoData = $("div.ts-breadcrumb ol li");
@@ -92,7 +92,8 @@ exports.SeeChapter = (req, res) => {
                 let serverName = $(el).text().trim().replace(/\n/g, '');
                 let urlFixed = "";
                 if (url) {
-                    if ((serverName == "Omega" || serverName == "Lions" || serverName == "Moon") && !url.includes("http")) {
+                    if ((serverName == "Omega" || serverName == "Lions" || serverName == "Moon") 
+                    && !url.includes("http") && !url.includes("ok.ru")) {
                         urlFixed = "https://animeyt.es/" + url;
                     } else if (url.includes("ok.ru") || url.includes("sendvid")) {
                         urlFixed = "https:" + url;
@@ -117,6 +118,7 @@ exports.SeeChapter = (req, res) => {
 
             }
         })
+        animeInfo.defaultPlayer = animeInfo.servers[0].url;
         res.send(animeInfo)
     }, (err) => {
         res.send(err)
