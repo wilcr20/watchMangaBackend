@@ -1,6 +1,34 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
 
+
+exports.home = (_, res) => {
+    cloudscraper.get('https://www3.animeflv.net/').then((body) => {
+        var $ = cheerio.load(body);
+        let listItems = $("ul.ListEpisodios li");
+        var animeList = [];
+        listItems.each((_idx, el) => {
+
+            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
+            anime.url = "https://www3.animeflv.net"+ $(el).find("a").attr("href");
+            let chapterNumber = $(el).find("a span.Capi").text();
+            if(chapterNumber){
+
+            }
+            anime.title = $(el).find("a strong").text().replace(/\n/g, '') + " "+ chapterNumber;
+            anime.imageUrl = "https://www3.animeflv.net"+ $(el).find("a img").attr("src").replace("?resize=200,200", "");
+            animeList.push(anime);
+
+        });
+        res.send({ data: animeList });
+    }, (err) => {
+        res.send(err)
+    })
+}
+
+
+
+
 exports.search = (req, res) => {
     var options = {
         uri: req.body.term, // "https://www3.animeflv.net/browse?q=" +
@@ -95,11 +123,11 @@ exports.getAnimeInfo = (req, res) => {
                 //     console.log("s");
                 //     type = idx == 0 ? ' (Precuela)' : ' (Secuela)';
                 // }
-                console.log("text  "+ type)
+                console.log("text  " + type)
                 animeInfo.related.push(
                     {
                         url: "https://www3.animeflv.net" + $(el).find("a").attr("href"),
-                        name:  type
+                        name: type
                     });
             });
         }

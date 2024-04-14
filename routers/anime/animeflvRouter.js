@@ -3,7 +3,7 @@ const router = express.Router();
 
 const animeflvController = require("../../controllers/anime/animeFlvController");
 
-// router.get("/home", lectortmoController.home);
+router.get("/home", animeflvController.home);
 router.post("/search", animeflvController.search);
 router.post("/getAnimeInfo", animeflvController.getAnimeInfo);
 router.post("/SeeChapter", animeflvController.SeeChapter);
