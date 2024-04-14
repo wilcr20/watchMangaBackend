@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const animeflvController = require("../controllers/animeFlvController");
+const animeflvController = require("../../controllers/anime/animeFlvController");
 
 // router.get("/home", lectortmoController.home);
 router.post("/search", animeflvController.search);

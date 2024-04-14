@@ -9,8 +9,8 @@ const lectorMangaLatRouter = require("./routers/lectorMangaLatRouter");
 const manwhaLatinoRouter = require("./routers/manwhaLatinoRouter");
 
 // anime
-const animeflvRouter = require("./routers/animeflvRouter");
-const animeytRouter = require("./routers/animeytRouter");
+const animeflvRouter = require("./routers/anime/animeflvRouter");
+const animeytRouter = require("./routers/anime/animeytRouter");
 
 const app = express();
 

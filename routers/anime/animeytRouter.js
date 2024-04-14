@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const animeytController = require("../controllers/animeytController");
+const animeytController = require("../../controllers/anime/animeytController");
 
 router.get("/home", animeytController.home);
 router.get("/homeSeeMore", animeytController.homeSeeMore);
