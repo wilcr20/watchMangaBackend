@@ -232,9 +232,9 @@ exports.movies = (req, res) => {
     });
 }
 
-exports.ongoing = (_, res) => {
+exports.ongoing = (req, res) => {
     var options = {
-        uri: "https://www3.animeflv.net/browse?status%5B%5D=1&order=default",  
+        uri: req.body.url,  //"https://www3.animeflv.net/browse?status%5B%5D=1&order=default",  
         timeout: 10000
     }
     cloudscraper.get(options).then((body) => {
