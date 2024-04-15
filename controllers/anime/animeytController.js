@@ -102,7 +102,9 @@ exports.SeeChapter = (req, res) => {
                         urlFixed = url;
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
-                    if (!urlFixed.includes("short.ink") && (serverName != "Netu" && !serverName.includes("Kraken")
+                    if (!urlFixed.includes("short.ink") && (serverName != "Netu" 
+                        && !serverName.includes("Kraken")
+                        && !serverName.includes("Omega")
                         && !serverName.includes("Fembed")
                         && !serverName.includes("Stream")
                         )) {
