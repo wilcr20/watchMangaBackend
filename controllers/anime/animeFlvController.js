@@ -117,13 +117,6 @@ exports.getAnimeInfo = (req, res) => {
         if (relatedAnimeList && relatedAnimeList.length > 0) {
             relatedAnimeList.each((idx, el) => {
                 let type = $(el).text();
-                // if(relatedAnimeList.length == 1){
-                //     type = ' (Secuela)';
-                // }else{
-                //     console.log("s");
-                //     type = idx == 0 ? ' (Precuela)' : ' (Secuela)';
-                // }
-                console.log("text  " + type)
                 animeInfo.related.push(
                     {
                         url: "https://www3.animeflv.net" + $(el).find("a").attr("href"),
@@ -132,7 +125,15 @@ exports.getAnimeInfo = (req, res) => {
             });
         }
         try {
-            let listChapters = JSON.parse(body.split("var episodes =")[1]?.split("var last_seen = 0")[0].trim().replace(";", ""))
+            let listChapters = JSON.parse(body.split("var episodes =")[1]?.split("var last_seen = 0")[0]?.trim()?.replace(";", ""))
+            let animeInfoList = JSON.parse(body.split("var anime_info =")[1]?.split(";")[0]);
+            if(animeInfoList[3]){
+                animeInfo.chapterList.push({
+                    chapter: "Próximo capítulo: " + animeInfoList[3],
+                    date: null,
+                    chapterUrl: null
+                });
+            }
             for (let index = 0; index < listChapters.length; index++) {
                 const element = listChapters[index];
                 animeInfo.chapterList.push({
@@ -143,7 +144,7 @@ exports.getAnimeInfo = (req, res) => {
 
             }
         } catch (error) {
-            // console.log(error);
+            console.log(error);
         }
 
         var genreListHtml = $("nav.Nvgnrs a");
