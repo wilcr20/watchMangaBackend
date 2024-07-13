@@ -18,7 +18,7 @@ exports.home = (_, res) => {
         });
         res.send({ data: mangaList });
     }, (err) => {
-        res.send(error);
+        res.send(err);
     })
 
 }
