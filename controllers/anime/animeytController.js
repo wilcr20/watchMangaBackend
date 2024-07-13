@@ -12,7 +12,7 @@ exports.home = (_, res) => {
                 var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
                 anime.url = $(el).find("a").attr("href").trim();
                 anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+                anime.imageUrl = $(el).find("img.ts-post-image").attr("src")?.replace("?resize=200,200", "");
                 animeList.push(anime);
             }
         });
@@ -33,7 +33,7 @@ exports.homeSeeMore = (_, res) => {
                 var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
                 anime.url = $(el).find("a").attr("href").trim();
                 anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+                anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?resize=200,200", "");
                 animeList.push(anime);
             }
 
@@ -50,7 +50,7 @@ exports.getAnimeInfo = (req, res) => {
         const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb").find("img").attr("data-src").replace("?resize=247,350", "");
+        animeInfo.imageUrl = $("div.thumb").find("img").attr("src")?.replace("?resize=247,350", "");
         var chapterListHtml = $("div.eplister ul li");
         chapterListHtml.each((_idx, el) => {
             animeInfo.chapterList.push({
@@ -136,7 +136,7 @@ exports.search = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?h=300", "");
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?h=300", "");
             animeList.push(anime);
         });
         res.send({ data: animeList });
@@ -151,7 +151,7 @@ exports.recomendation = (_, res) => {
         const animeInfo = { title: "", animeUrl: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb").find("img").attr("data-src");
+        animeInfo.imageUrl = $("div.thumb").find("img").attr("src");
 
         let breadcrumbHTML = $(".ts-breadcrumb ol li")
         breadcrumbHTML.each((idx, el) => {
@@ -192,7 +192,7 @@ exports.ongoing = (_, res) => {
                 var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
                 anime.url = $(el).find("a").attr("href").trim();
                 anime.title = $(el).find("a").attr("title").trim()?.replace(/\n/g, '');
-                anime.imageUrl = $(el).find("div.limit img").attr("data-src")?.replace("?resize=247,350", "");
+                anime.imageUrl = $(el).find("div.limit img").attr("src")?.replace("?resize=247,350", "");
                 animeListByDay.push(anime);
             });
 
@@ -220,7 +220,7 @@ exports.directory = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=200,200", "");
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?resize=200,200", "");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
@@ -241,7 +241,7 @@ exports.directoryLatin = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=247,350", "");
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("src")?.replace("?resize=247,350", "");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
@@ -262,7 +262,7 @@ exports.animesComingSoon = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?resize=247,350", "");
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?resize=247,350", "");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
