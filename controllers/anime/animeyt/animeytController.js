@@ -1,18 +1,22 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
+const constants = require("./selectors")
+
 
 exports.home = (_, res) => {
-    cloudscraper.get('https://animeyt.es/').then((body) => {
+    cloudscraper.get(constants.WEBSITE_URL).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("div.excstf article.styletwo");
+
+        let listItems = $(constants.DIV_LIST_HOME);
         var animeList = [];
+        console.log(listItems.length)
         listItems.each((_idx, el) => {
-            let type = $(el).find("div.limit div.bt span.epx").text();
+            let type = $(el).find(constants.DIV_TYPE).text();
             if (type != "Próximamente") {
-                var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-                anime.url = $(el).find("a").attr("href").trim();
-                anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+                var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+                anime.url = $(el).find("a").attr("href")?.trim();
+                anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+                anime.imageUrl = $(el).find("img").attr("src");
                 animeList.push(anime);
             }
         });
@@ -23,17 +27,17 @@ exports.home = (_, res) => {
 }
 
 exports.homeSeeMore = (_, res) => {
-    cloudscraper.get('https://animeyt.es/page/2/').then((body) => {
+    cloudscraper.get(constants.WEBSITE_URL + 'page/2/').then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("div.excstf article.styletwo");
+        let listItems = $(constants.DIV_LIST_HOME);
         var animeList = [];
         listItems.each((_idx, el) => {
-            let type = $(el).find("div.limit div.bt span.epx").text();
+            let type = $(el).find(constants.DIV_TYPE).text();
             if (type != "Próximamente") {
-                var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-                anime.url = $(el).find("a").attr("href").trim();
-                anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                anime.imageUrl = $(el).find("img.ts-post-image").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+                var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+                anime.url = $(el).find("a").attr("href")?.trim();
+                anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+                anime.imageUrl = $(el).find("img").attr("src");
                 animeList.push(anime);
             }
 
@@ -47,10 +51,10 @@ exports.homeSeeMore = (_, res) => {
 exports.getAnimeInfo = (req, res) => {
     cloudscraper.get(req.body.animeUrl).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
+        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb").find("img").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+        animeInfo.imageUrl = $("div.thumb img").attr("src");
         var chapterListHtml = $("div.eplister ul li");
         chapterListHtml.each((_idx, el) => {
             animeInfo.chapterList.push({
@@ -72,11 +76,11 @@ exports.getAnimeInfo = (req, res) => {
 exports.SeeChapter = (req, res) => {
     cloudscraper.get(req.body.animeUrl).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: "animeyt" }
+        const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME }
         let defaultIframeUrl = $("div.video-content").find("iframe").attr("src")
-        // animeInfo.defaultPlayer = defaultIframeUrl.includes("http")  ? defaultIframeUrl : "https://animeyt.es/" + defaultIframeUrl;
+        // animeInfo.defaultPlayer = defaultIframeUrl.includes("http")  ? defaultIframeUrl : constants.WEBSITE_URL + defaultIframeUrl;
         animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
-        animeInfo.date = $("span.year span.updated").text();
+        animeInfo.date = $("span.year span.updated").text()?.trim();
         var animeInfoData = $("div.ts-breadcrumb ol li");
         var serversData = $("select.mirror option");
         animeInfoData.each((idx, el) => {
@@ -92,9 +96,9 @@ exports.SeeChapter = (req, res) => {
                 let serverName = $(el).text().trim().replace(/\n/g, '');
                 let urlFixed = "";
                 if (url) {
-                    if ((serverName == "Omega" || serverName == "Lions" || serverName == "Moon") 
-                    && !url.includes("http") && !url.includes("ok.ru")) {
-                        urlFixed = "https://animeyt.es/" + url;
+                    if ((serverName == "Omega" || serverName == "Lions" || serverName == "Moon")
+                        && !url.includes("http") && !url.includes("ok.ru")) {
+                        urlFixed = constants.WEBSITE_URL + url;
                     } else if (url.includes("ok.ru") || url.includes("sendvid")) {
                         urlFixed = "https:" + url;
                     }
@@ -102,12 +106,12 @@ exports.SeeChapter = (req, res) => {
                         urlFixed = url;
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
-                    if (!urlFixed.includes("short.ink") && (serverName != "Netu" 
+                    if (!urlFixed.includes("short.ink") && (serverName != "Netu"
                         && !serverName.includes("Kraken")
                         && !serverName.includes("Omega")
                         && !serverName.includes("Fembed")
                         && !serverName.includes("Stream")
-                        )) {
+                    )) {
                         animeInfo.servers.push(
                             {
                                 "server": serverName,
@@ -128,12 +132,12 @@ exports.SeeChapter = (req, res) => {
 }
 
 exports.search = (req, res) => {
-    cloudscraper.get("https://animeyt.es/?s=" + req.body.term).then((body) => {
+    cloudscraper.get(constants.SEARCH_URL + req.body.term).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("div.listupd article.bs");
+        let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?h=300", "");
@@ -145,43 +149,11 @@ exports.search = (req, res) => {
     });
 }
 
-exports.recomendation = (_, res) => {
-    cloudscraper.get("https://animeyt.es/random").then((body) => {
-        var $ = cheerio.load(body);
-        const animeInfo = { title: "", animeUrl: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: "animeyt" }
-        animeInfo.title = $("h1.entry-title").eq(0).text();
-        animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb").find("img").attr("src");
-
-        let breadcrumbHTML = $(".ts-breadcrumb ol li")
-        breadcrumbHTML.each((idx, el) => {
-            if (idx == 1) {
-                animeInfo.animeUrl = $(el).find("a").attr("href");
-            }
-        })
-
-        var chapterListHtml = $("div.eplister ul li");
-        chapterListHtml.each((_idx, el) => {
-            animeInfo.chapterList.push({
-                chapter: $(el).find(".epl-title").text().trim(),
-                date: $(el).find(".epl-date").text().trim(),
-                chapterUrl: $(el).find("a").attr("href")
-            });
-        });
-        var genreListHtml = $("div.genxed a");
-        genreListHtml.each((_idx, el) => {
-            animeInfo.genreList.push({ genre: $(el).text().trim() });
-        });
-        res.send(animeInfo)
-    }, (err) => {
-        res.send(err)
-    })
-}
 
 exports.ongoing = (_, res) => {
-    cloudscraper.get("https://animeyt.es/anime-en-emision/").then((body) => {
+    cloudscraper.get(constants.ANIMES_ONGOING_URL).then((body) => {
         var $ = cheerio.load(body);
-        const animeList = { title: "", sections: [], website: "animeyt" }
+        const animeList = { title: "", sections: [], website: constants.WEBSITE_NAME }
         animeList.title = $(".releases h1").text();
         let sectionbyDaysHTML = $("div.postbody div.schedulepage");
         sectionbyDaysHTML.each((idx, el) => {
@@ -189,10 +161,10 @@ exports.ongoing = (_, res) => {
             let listItems = $(el).find("div.bsx");
             let animeListByDay = [];
             listItems.each((_idx, el) => {
-                var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
+                var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
                 anime.url = $(el).find("a").attr("href").trim();
                 anime.title = $(el).find("a").attr("title").trim()?.replace(/\n/g, '');
-                anime.imageUrl = $(el).find("div.limit img").attr("src")?.replace("?resize=247,350", "");
+                anime.imageUrl = $(el).find("div.limit img").attr("src")?.replace(constants.RESIZE_IMG, "");
                 animeListByDay.push(anime);
             });
 
@@ -214,13 +186,13 @@ exports.directory = (req, res) => {
         var $ = cheerio.load(body);
         let prevButton = $("a.l").eq(0).attr("href");
         let nextButton = $("a.r").eq(0).attr("href");
-        let listItems = $("div.listupd article.bs");
+        let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-            anime.url = $(el).find("a").attr("href").trim();
-            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").attr("href")?.trim();
+            anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img").attr("src");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
@@ -230,18 +202,18 @@ exports.directory = (req, res) => {
 }
 
 exports.directoryLatin = (req, res) => {
-    //"https://animeyt.es/tv/?status=&type=&sub=dub&order=update"
+    //"https://aniyt.net/tv/?sub=dub"
     cloudscraper.get(req.body.url).then((body) => {
         var $ = cheerio.load(body);
-        let prevButton = $("a.l").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.l").eq(0).attr("href") : undefined;
-        let nextButton = $("a.r").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.r").eq(0).attr("href") : undefined;
-        let listItems = $("div.listupd article.bs");
+        let prevButton = $("a.l").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.l").eq(0).attr("href") : undefined;
+        let nextButton = $("a.r").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.r").eq(0).attr("href") : undefined;
+        let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-            anime.url = $(el).find("a").attr("href").trim();
-            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").attr("href")?.trim();
+            anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img").attr("src");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
@@ -254,15 +226,15 @@ exports.directoryLatin = (req, res) => {
 exports.animesComingSoon = (req, res) => {
     cloudscraper.get(req.body.url).then((body) => {
         var $ = cheerio.load(body);
-        let prevButton = $("a.l").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.l").eq(0).attr("href") : undefined;
-        let nextButton = $("a.r").eq(0).attr("href") ? "https://animeyt.es/tv/" + $("a.r").eq(0).attr("href") : undefined;
-        let listItems = $("div.listupd article.bs");
+        let prevButton = $("a.l").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.l").eq(0).attr("href") : undefined;
+        let nextButton = $("a.r").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.r").eq(0).attr("href") : undefined;
+        let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeyt" };
-            anime.url = $(el).find("a").attr("href").trim();
-            anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").toString().split("data-src=")[1].split("class=")[0].replace('\"',"");
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").attr("href")?.trim();
+            anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img").attr("src");
             animeList.push(anime);
         });
         res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });

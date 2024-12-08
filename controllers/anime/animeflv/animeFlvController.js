@@ -1,22 +1,22 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
-
+const constants = require("./selectors")
 
 exports.home = (_, res) => {
-    cloudscraper.get('https://www3.animeflv.net/').then((body) => {
+    cloudscraper.get(constants.WEBSITE_URL).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("ul.ListEpisodios li");
+        let listItems = $(constants.UL_LIST_EPISODES_HOME);
         var animeList = [];
         listItems.each((_idx, el) => {
 
-            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
-            anime.url = "https://www3.animeflv.net"+ $(el).find("a").attr("href");
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            anime.url = constants.WEBSITE_URL+ $(el).find("a").attr("href");
             let chapterNumber = $(el).find("a span.Capi").text();
             if(chapterNumber){
 
             }
             anime.title = $(el).find("a strong").text().replace(/\n/g, '') + " "+ chapterNumber;
-            anime.imageUrl = "https://www3.animeflv.net"+ $(el).find("a img").attr("src").replace("?resize=200,200", "");
+            anime.imageUrl = constants.WEBSITE_URL+ $(el).find("a img").attr("src").replace(constants.RESIZE_IMG, "");
             animeList.push(anime);
 
         });
@@ -26,9 +26,6 @@ exports.home = (_, res) => {
     })
 }
 
-
-
-
 exports.search = (req, res) => {
     var options = {
         uri: req.body.term, // "https://www3.animeflv.net/browse?q=" +
@@ -36,16 +33,16 @@ exports.search = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("ul.ListAnimes article.Anime");
+        let listItems = $(constants.UL_LIST_ANIMES);
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $("div.NvCnAnm ul.pagination li");
+        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
-            anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("figure img").attr("src");
+            anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
             animeList.push(anime);
         });
 
@@ -54,7 +51,7 @@ exports.search = (req, res) => {
             let display = $(el).find("a").text().trim().replace(/\n/g, '');
             if (display !== "«" && display !== "»") {
                 button.display = display;
-                button.url = "https://www3.animeflv.net" + $(el).find("a").attr("href");
+                button.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
                 listNavigation.push(button);
             }
 
@@ -74,16 +71,16 @@ exports.filterSearch = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $("ul.ListAnimes article.Anime");
+        let listItems = $(constants.UL_LIST_ANIMES);
         var animeList = [];
         var listNavigation = [];
 
         var buttonsNavigationHTMl = $("ul.pagination li:not(.active)");
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
-            anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("figure img").attr("src");
+            anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
             animeList.push(anime);
         });
         buttonsNavigationHTMl.each((_idx, el) => {
@@ -91,7 +88,7 @@ exports.filterSearch = (req, res) => {
             let display = $(el).find("a").text().trim().replace(/\n/g, '');
             if (display !== "«" && display !== "»" && display != "") {
                 button.display = display;
-                button.url = "https://www3.animeflv.net" + $(el).find("a").attr("href");
+                button.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
                 listNavigation.push(button);
             }
         });
@@ -109,17 +106,17 @@ exports.getAnimeInfo = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: "animeflv" }
+        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: constants.WEBSITE_NAME}
         animeInfo.title = $("div.Container h1").text();
         animeInfo.description = $("div.Description").text().trim();
-        animeInfo.imageUrl = "https://www3.animeflv.net" + $("div.AnimeCover").find("figure img").attr("src");
+        animeInfo.imageUrl = constants.WEBSITE_URL + $("div.AnimeCover").find(constants.FIGURE_IMG).attr("src");
         var relatedAnimeList = $("ul.ListAnmRel li");
         if (relatedAnimeList && relatedAnimeList.length > 0) {
             relatedAnimeList.each((idx, el) => {
                 let type = $(el).text();
                 animeInfo.related.push(
                     {
-                        url: "https://www3.animeflv.net" + $(el).find("a").attr("href"),
+                        url: constants.WEBSITE_URL + $(el).find("a").attr("href"),
                         name: type
                     });
             });
@@ -167,12 +164,12 @@ exports.SeeChapter = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: "animeflv" }
+        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME}
         let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
         var breadcrumbHtml = $("nav.Brdcrmb a");
         breadcrumbHtml.each((idx, el) => {
             if (idx == 1) {
-                animeInfo.animeUrl = "https://www3.animeflv.net" + $(el).attr("href");
+                animeInfo.animeUrl = constants.WEBSITE_URL + $(el).attr("href");
                 animeInfo.title = $(el).text();
             }
         })
@@ -202,16 +199,16 @@ exports.movies = (req, res) => {
     cloudscraper.get(options).then((body) => {
 
         var $ = cheerio.load(body);
-        let listItems = $("ul.ListAnimes article.Anime");
+        let listItems = $(constants.UL_LIST_ANIMES);
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $("div.NvCnAnm ul.pagination li");
+        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
-            anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("figure img").attr("src");
+            anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
             animeList.push(anime);
         });
 
@@ -220,7 +217,7 @@ exports.movies = (req, res) => {
             let display = $(el).find("a").text().trim().replace(/\n/g, '');
             if (display !== "«" && display !== "»") {
                 button.display = display;
-                button.url = "https://www3.animeflv.net" + $(el).find("a").attr("href");
+                button.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
                 listNavigation.push(button);
             }
 
@@ -240,16 +237,16 @@ exports.ongoing = (req, res) => {
     cloudscraper.get(options).then((body) => {
 
         var $ = cheerio.load(body);
-        let listItems = $("ul.ListAnimes article.Anime");
+        let listItems = $(constants.UL_LIST_ANIMES);
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $("div.NvCnAnm ul.pagination li");
+        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: "animeflv" };
-            anime.url = "https://www3.animeflv.net" + $(el).find("a").attr("href").trim();
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("figure img").attr("src");
+            anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
             animeList.push(anime);
         });
 
@@ -258,7 +255,7 @@ exports.ongoing = (req, res) => {
             let display = $(el).find("a").text().trim().replace(/\n/g, '');
             if (display !== "«" && display !== "»") {
                 button.display = display;
-                button.url = "https://www3.animeflv.net" + $(el).find("a").attr("href");
+                button.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
                 listNavigation.push(button);
             }
 
