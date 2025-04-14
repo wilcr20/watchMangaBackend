@@ -1,6 +1,7 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
 const constants = require("./selectors")
+const request = require("request");
 
 exports.home = (_, res) => {
     cloudscraper.get(constants.WEBSITE_URL).then((body) => {
@@ -268,28 +269,25 @@ exports.ongoing = (req, res) => {
 
 
 exports.getHtmlData = (req, res) => {
-    var options = {
-        uri: req.body.url, // "https://www3.animeflv.net/browse?q=" +
-        timeout: 10000
-    }
-    cloudscraper.get(options).then((body) => {
-        var $ = cheerio.load(body);
-        var scripts = $("script");
-        var scriptData = [];
-        scripts.each((_idx, el) => {
-            if($(el).text().includes("p,a,c,k,e,d")){
-                scriptData = $(el).text().trim();
-            }
-        });
-
-
-        var data = {
-            script: scriptData,
-            website: constants.WEBSITE_NAME
-        };
-
-        res.send({ data: data });
-    }, (err) => {
-        res.send(err)
+    request(req.body.url, function (error, _response, body) {
+        if (!error) {
+            var $ = cheerio.load(body);
+            var scripts = $("script");
+            var scriptData = [];
+            scripts.each((_idx, el) => {
+                if ($(el).text().includes("p,a,c,k,e,d")) {
+                    scriptData = $(el).text().trim();
+                }
+            });
+            var data = {
+                script: scriptData,
+                website: constants.WEBSITE_NAME
+            };
+            res.send({ data: data });
+        }
+        else {
+            res.send(error);
+        }
     });
+
 }
