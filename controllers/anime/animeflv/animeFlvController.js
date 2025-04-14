@@ -9,14 +9,14 @@ exports.home = (_, res) => {
         var animeList = [];
         listItems.each((_idx, el) => {
 
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
-            anime.url = constants.WEBSITE_URL+ $(el).find("a").attr("href");
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
             let chapterNumber = $(el).find("a span.Capi").text();
-            if(chapterNumber){
+            if (chapterNumber) {
 
             }
-            anime.title = $(el).find("a strong").text().replace(/\n/g, '') + " "+ chapterNumber;
-            anime.imageUrl = constants.WEBSITE_URL+ $(el).find("a img").attr("src").replace(constants.RESIZE_IMG, "");
+            anime.title = $(el).find("a strong").text().replace(/\n/g, '') + " " + chapterNumber;
+            anime.imageUrl = constants.WEBSITE_URL + $(el).find("a img").attr("src").replace(constants.RESIZE_IMG, "");
             animeList.push(anime);
 
         });
@@ -39,7 +39,7 @@ exports.search = (req, res) => {
 
         var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
@@ -77,7 +77,7 @@ exports.filterSearch = (req, res) => {
 
         var buttonsNavigationHTMl = $("ul.pagination li:not(.active)");
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
@@ -106,7 +106,7 @@ exports.getAnimeInfo = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: constants.WEBSITE_NAME}
+        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
         animeInfo.title = $("div.Container h1").text();
         animeInfo.description = $("div.Description").text().trim();
         animeInfo.imageUrl = constants.WEBSITE_URL + $("div.AnimeCover").find(constants.FIGURE_IMG).attr("src");
@@ -124,7 +124,7 @@ exports.getAnimeInfo = (req, res) => {
         try {
             let listChapters = JSON.parse(body.split("var episodes =")[1]?.split("var last_seen = 0")[0]?.trim()?.replace(";", ""))
             let animeInfoList = JSON.parse(body.split("var anime_info =")[1]?.split(";")[0]);
-            if(animeInfoList[3]){
+            if (animeInfoList[3]) {
                 animeInfo.chapterList.push({
                     chapter: "Próximo capítulo: " + animeInfoList[3],
                     date: null,
@@ -164,7 +164,7 @@ exports.SeeChapter = (req, res) => {
     }
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
-        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME}
+        const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME }
         let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
         var breadcrumbHtml = $("nav.Brdcrmb a");
         breadcrumbHtml.each((idx, el) => {
@@ -173,7 +173,6 @@ exports.SeeChapter = (req, res) => {
                 animeInfo.title = $(el).text();
             }
         })
-
         for (let index = 0; index < listServer.length; index++) {
             const server = listServer[index];
             animeInfo.servers.push(
@@ -205,7 +204,7 @@ exports.movies = (req, res) => {
 
         var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
@@ -243,7 +242,7 @@ exports.ongoing = (req, res) => {
 
         var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME};
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href").trim();
             anime.title = $(el).find("h3").text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find(constants.FIGURE_IMG).attr("src");
@@ -262,6 +261,34 @@ exports.ongoing = (req, res) => {
         });
 
         res.send({ data: animeList, buttons: listNavigation });
+    }, (err) => {
+        res.send(err)
+    });
+}
+
+
+exports.getHtmlData = (req, res) => {
+    var options = {
+        uri: req.body.url, // "https://www3.animeflv.net/browse?q=" +
+        timeout: 10000
+    }
+    cloudscraper.get(options).then((body) => {
+        var $ = cheerio.load(body);
+        var scripts = $("script");
+        var scriptData = [];
+        scripts.each((_idx, el) => {
+            if($(el).text().includes("p,a,c,k,e,d")){
+                scriptData = $(el).text().trim();
+            }
+        });
+
+
+        var data = {
+            script: scriptData,
+            website: constants.WEBSITE_NAME
+        };
+
+        res.send({ data: data });
     }, (err) => {
         res.send(err)
     });
