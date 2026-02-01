@@ -130,7 +130,7 @@ exports.SeeChapter = (req, res) => {
 }
 
 exports.search = (req, res) => {
-    cloudscraper.get(constants.SEARCH_URL + req.body.term).then((body) => {
+    cloudscraper.get(req.body.term).then((body) => {
         var $ = cheerio.load(body);
         let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
@@ -263,6 +263,8 @@ exports.filterSearch = (req, res) => {
         uri: req.body.url,
         timeout: 10000
     }
+            console.log(req.body.url)
+
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
         let listItems = $(constants.DIV_LIST_ANIMES);
@@ -278,7 +280,6 @@ exports.filterSearch = (req, res) => {
             animeList.push(anime);
             
         });
-        console.log(buttonsNavigationHTMl.length)
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
             let display = $(el).text().trim().replace(/\n/g, '');
