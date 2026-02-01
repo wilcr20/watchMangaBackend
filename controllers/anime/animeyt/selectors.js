@@ -1,7 +1,7 @@
-exports.WEBSITE_URL = "https://animeyt.es/";
+exports.WEBSITE_URL = "https://animeytx.net/";
 exports.WEBSITE_NAME = "animeyt";
 exports.RESIZE_IMG = "?resize=247,350";
-exports.DIV_LIST_HOME = "div.listupd article.bs.styletwo";
+exports.DIV_LIST_HOME = "div.listupd.normal article.bs.styleegg";
 exports.DIV_LIST_ANIMES = "div.listupd article.bs";
 exports.DIV_TYPE= "div.limit div.typez";
 exports.SEARCH_URL= "https://animeyt.es/?s=";
