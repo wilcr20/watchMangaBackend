@@ -134,6 +134,8 @@ exports.search = (req, res) => {
         var $ = cheerio.load(body);
         let listItems = $(constants.DIV_LIST_ANIMES);
         var animeList = [];
+        var buttonsNavigationHTMl = $("div.hpage a");
+        var listNavigation = [];
         listItems.each((_idx, el) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href").trim();
@@ -141,7 +143,16 @@ exports.search = (req, res) => {
             anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?h=300", "");
             animeList.push(anime);
         });
-        res.send({ data: animeList });
+        buttonsNavigationHTMl.each((_idx, el) => {
+            var button = { display: null, url: null };
+            let display = $(el).text().trim().replace(/\n/g, '');
+            button.display = display;
+            button.url = "https://animeytx.net/tv/" + $(el).attr("href");
+            listNavigation.push(button);
+
+        });
+
+        res.send({ data: animeList, buttons: listNavigation });
     }, (err) => {
         res.send(err)
     });
@@ -263,7 +274,7 @@ exports.filterSearch = (req, res) => {
         uri: req.body.url,
         timeout: 10000
     }
-            console.log(req.body.url)
+    console.log(req.body.url)
 
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
@@ -278,16 +289,14 @@ exports.filterSearch = (req, res) => {
             anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find("img").attr("data-src");
             animeList.push(anime);
-            
+
         });
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
             let display = $(el).text().trim().replace(/\n/g, '');
-            // if (!display.includes("«") && !display.includes("»")) {
-                button.display = display;
-                button.url = "https://animeytx.net/tv/"+$(el).attr("href");
-                listNavigation.push(button);
-            // }
+            button.display = display;
+            button.url = "https://animeytx.net/tv/" + $(el).attr("href");
+            listNavigation.push(button);
 
         });
         res.send({ data: animeList, buttons: listNavigation });
