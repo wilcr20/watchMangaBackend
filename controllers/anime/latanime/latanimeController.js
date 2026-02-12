@@ -58,6 +58,7 @@ exports.getAnimeInfo = (req, res) => {
             // animeInfo.genreList.push({ genre: $(el).text().trim() });
         });
 
+        animeInfo.chapterList = animeInfo.chapterList.reverse()
 
         res.send(animeInfo)
     }, (err) => {
