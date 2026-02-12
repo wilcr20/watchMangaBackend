@@ -104,12 +104,7 @@ exports.SeeChapter = (req, res) => {
                         urlFixed = url;
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
-                    if (!urlFixed.includes("short.ink") && (serverName != "Netu"
-                        && !serverName.includes("Kraken")
-                        && !serverName.includes("Omega")
-                        && !serverName.includes("Fembed")
-                        && !serverName.includes("Stream")
-                    )) {
+                    if (true) {
                         animeInfo.servers.push(
                             {
                                 "server": serverName,
@@ -224,49 +219,6 @@ exports.directory = (req, res) => {
         res.send(err)
     })
 }
-
-exports.directoryLatin = (req, res) => {
-    //"https://aniyt.net/tv/?sub=dub"
-    cloudscraper.get(req.body.url).then((body) => {
-        var $ = cheerio.load(body);
-        let prevButton = $("a.l").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.l").eq(0).attr("href") : undefined;
-        let nextButton = $("a.r").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.r").eq(0).attr("href") : undefined;
-        let listItems = $(constants.DIV_LIST_ANIMES);
-        var animeList = [];
-        listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
-            anime.url = $(el).find("a").attr("href")?.trim();
-            anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img").attr("src");
-            animeList.push(anime);
-        });
-        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
-    }, (err) => {
-        res.send(err)
-    })
-}
-
-
-exports.animesComingSoon = (req, res) => {
-    cloudscraper.get(req.body.url).then((body) => {
-        var $ = cheerio.load(body);
-        let prevButton = $("a.l").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.l").eq(0).attr("href") : undefined;
-        let nextButton = $("a.r").eq(0).attr("href") ? constants.WEBSITE_TV_URL + $("a.r").eq(0).attr("href") : undefined;
-        let listItems = $(constants.DIV_LIST_ANIMES);
-        var animeList = [];
-        listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
-            anime.url = $(el).find("a").attr("href")?.trim();
-            anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img").attr("src");
-            animeList.push(anime);
-        });
-        res.send({ data: animeList, buttons: { nextBtnUrl: nextButton, prevBtnUrl: prevButton } });
-    }, (err) => {
-        res.send(err)
-    })
-}
-
 
 
 exports.filterSearch = (req, res) => {

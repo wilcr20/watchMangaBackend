@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const manwhaLatinoController = require("../controllers/manwhaLatinoController");
+const manwhaLatinoController = require("../controllers/manga/manwhaLatinoController");
 
 router.get("/home", manwhaLatinoController.home);
 router.get("/trends", manwhaLatinoController.trends);
