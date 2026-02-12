@@ -124,7 +124,7 @@ exports.search = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img").attr("src");
+            anime.imageUrl = $(el).find("div.serieimg img").attr("data-src");
             animeList.push(anime);
         });
         buttonsNavigationHTMl.each((_idx, el) => {
@@ -161,7 +161,7 @@ exports.filterSearch = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img").attr("src");
+            anime.imageUrl = $(el).find("img").attr("data-src");
             if(anime.title != ""){
             animeList.push(anime);
 
