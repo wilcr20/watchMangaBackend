@@ -126,7 +126,9 @@ exports.search = (req, res) => {
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find("div.series img").attr("src");
-            animeList.push(anime);
+            if (anime.title != "") {
+                animeList.push(anime);
+            }
         });
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
@@ -136,8 +138,6 @@ exports.search = (req, res) => {
                 button.url = $(el).find("a").attr("href") || null;
                 listNavigation.push(button);
             }
-
-
         });
 
         res.send({ data: animeList, buttons: listNavigation });
@@ -163,9 +163,8 @@ exports.filterSearch = (req, res) => {
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find("img").attr("data-src");
-            if(anime.title != ""){
-            animeList.push(anime);
-
+            if (anime.title != "") {
+                animeList.push(anime);
             }
         });
         buttonsNavigationHTMl.each((_idx, el) => {
