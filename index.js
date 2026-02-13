@@ -12,6 +12,9 @@ const manwhaLatinoRouter = require("./routers/manwhaLatinoRouter");
 const animeflvRouter = require("./routers/anime/animeflvRouter");
 const animeytRouter = require("./routers/anime/animeytRouter");
 const latanimeRouter = require("./routers/anime/latanimeRouter");
+const katanimeRouter = require("./routers/anime/katanimeRouter");
+
+
 const app = express();
 
 app.use(express.json());
@@ -36,6 +39,9 @@ app.use("/manga/manwhaLatino/", manwhaLatinoRouter)
 app.use("/anime/animeflv", animeflvRouter )
 app.use("/anime/animeyt", animeytRouter )
 app.use("/anime/latanime", latanimeRouter )
+app.use("/anime/katanime", katanimeRouter )
+
+
 
 app.get('/', function (_req, res) {
     console.log("Got a GET request for the homepage");
