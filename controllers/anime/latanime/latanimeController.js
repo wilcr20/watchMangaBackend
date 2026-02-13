@@ -126,6 +126,10 @@ exports.search = (req, res) => {
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
             anime.imageUrl = $(el).find("div.series img").attr("src");
+            if (anime.imageUrl == "https://latanime.org/public/img/anime.png") {
+                anime.imageUrl = $(el).find("img").attr("data-src");
+            }
+
             if (anime.title != "") {
                 animeList.push(anime);
             }
@@ -133,7 +137,7 @@ exports.search = (req, res) => {
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
             let display = $(el).text().trim().replace(/\n/g, '');
-            if (display != "›" && display != "‹") {
+            if (display != "›" && display != "‹" && display != "...") {
                 button.display = display;
                 button.url = $(el).find("a").attr("href") || null;
                 listNavigation.push(button);
