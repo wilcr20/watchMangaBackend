@@ -94,6 +94,8 @@ exports.SeeChapter = (req, res) => {
                         urlFixed = url;
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
+                    urlFixed = urlFixed.replace("https:https:", "https:");
+                    
                     if (true) {
                         animeInfo.servers.push(
                             {
