@@ -41,8 +41,12 @@ exports.getAnimeInfo = (req, res) => {
         linksListHtml.each((_idx, el) => {
             var url = $(el).attr("href");
             if (url.includes("episodio")) {
+                let name = $(el).find("img").attr("alt");
+                if (name.includes("capitulo")) {
+                    name = "Capítulo" + name.split("capitulo")[1];
+                }
                 animeInfo.chapterList.push({
-                    chapter: $(el).find("img").attr("alt"),
+                    chapter: name,
                     date: null,
                     chapterUrl: url
                 });
@@ -55,7 +59,6 @@ exports.getAnimeInfo = (req, res) => {
             if (url.includes("genero")) {
                 animeInfo.genreList.push({ genre: $(el).find("div.btn").text().trim() });
             }
-            // animeInfo.genreList.push({ genre: $(el).text().trim() });
         });
 
         animeInfo.chapterList = animeInfo.chapterList.reverse()
@@ -101,7 +104,7 @@ exports.SeeChapter = (req, res) => {
                     }
                     urlFixed = urlFixed.replace("http:", "https:");
                     urlFixed = urlFixed.replace("https:https:", "https:");
-                    
+
                     if (true) {
                         animeInfo.servers.push(
                             {
