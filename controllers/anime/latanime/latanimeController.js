@@ -74,7 +74,13 @@ exports.SeeChapter = (req, res) => {
         var serversData = $("ul.cap_repro li");
         var animeInfoData = $("div.container-fluid");
 
-        animeInfo.animeUrl = $(animeInfoData).find("div.controles a").attr("href");
+        let controlsHtml = $(animeInfoData).find("div.controles a");
+        controlsHtml.each((_idx, el) => {
+            var url = $(el).attr("href");
+            if (url.includes("/anime/")) {
+                animeInfo.animeUrl = url;
+            }
+        });
         animeInfo.title = $(animeInfoData).find("div.row h2.mojon4").text();
 
         serversData.each((idx, el) => {
