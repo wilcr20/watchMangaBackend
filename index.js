@@ -1,18 +1,19 @@
 const express = require('express');
 
 // manga
-const leercapituloRuter = require("./routers/leercapituloRouter");
-const tumanhwasRouter = require("./routers/tumanhwasRouter");
-const tmomangaRouter = require("./routers/tmomangaRouter");
-const lectortmoRouter = require("./routers/lectortmoRouter");
-const lectorMangaLatRouter = require("./routers/lectorMangaLatRouter");
-const manwhaLatinoRouter = require("./routers/manwhaLatinoRouter");
+const leercapituloRuter = require("./routers/manga/leercapituloRouter");
+const tumanhwasRouter = require("./routers/manga/tumanhwasRouter");
+const tmomangaRouter = require("./routers/manga/tmomangaRouter");
+const lectortmoRouter = require("./routers/manga/lectortmoRouter");
+const lectorMangaLatRouter = require("./routers/manga/lectorMangaLatRouter");
+const manwhaLatinoRouter = require("./routers/manga/manwhaLatinoRouter");
 
 // anime
 const animeflvRouter = require("./routers/anime/animeflvRouter");
 const animeytRouter = require("./routers/anime/animeytRouter");
 const latanimeRouter = require("./routers/anime/latanimeRouter");
 const katanimeRouter = require("./routers/anime/katanimeRouter");
+const jkanimeRouter = require("./routers/anime/jkanimeRouter");
 
 
 const app = express();
@@ -40,6 +41,7 @@ app.use("/anime/animeflv", animeflvRouter )
 app.use("/anime/animeyt", animeytRouter )
 app.use("/anime/latanime", latanimeRouter )
 app.use("/anime/katanime", katanimeRouter )
+app.use("/anime/jkanime", jkanimeRouter )
 
 
 

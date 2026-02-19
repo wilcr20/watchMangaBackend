@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const lectorMangaLatController = require("../controllers/manga/lectorMangaLatController");
+const lectorMangaLatController = require("../../controllers/manga/lectorMangaLatController");
 
 router.get("/home", lectorMangaLatController.home);
 router.get("/trends", lectorMangaLatController.trends);

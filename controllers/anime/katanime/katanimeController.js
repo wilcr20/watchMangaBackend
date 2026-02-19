@@ -105,7 +105,9 @@ exports.SeeChapter = (req, res) => {
                 }
             }
         })
-        animeInfo.defaultPlayer = animeInfo.servers[0].url;
+        if (animeInfo.servers && animeInfo.servers.length > 0) {
+            animeInfo.defaultPlayer = animeInfo.servers[0].url;
+        }
         res.send(animeInfo)
     }, (err) => {
         res.send(err)

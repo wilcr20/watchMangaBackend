@@ -118,7 +118,9 @@ exports.SeeChapter = (req, res) => {
 
             }
         })
-        animeInfo.defaultPlayer = animeInfo.servers[0].url;
+        if (animeInfo.servers && animeInfo.servers.length > 0) {
+            animeInfo.defaultPlayer = animeInfo.servers[0].url;
+        }
         res.send(animeInfo)
     }, (err) => {
         res.send(err)
@@ -147,10 +149,12 @@ exports.search = (req, res) => {
         });
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
-            let display = $(el).text().trim().replace(/\n/g, '');
+            let display = $(el).text().trim().replace(/\n/g, '').trim();
+            let url = $(el).find("a").attr("href") || null;
+
             if (display != "›" && display != "‹" && display != "...") {
                 button.display = display;
-                button.url = $(el).find("a").attr("href") || null;
+                button.url = url;
                 listNavigation.push(button);
             }
         });
@@ -185,7 +189,7 @@ exports.filterSearch = (req, res) => {
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
             let display = $(el).text().trim().replace(/\n/g, '');
-            if (display != "›" && display != "‹") {
+            if (display != "›" && display != "‹" && display != "...") {
                 button.display = display;
                 button.url = $(el).find("a").attr("href") || null;
                 listNavigation.push(button);

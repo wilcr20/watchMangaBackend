@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const leercapituloController = require("../controllers/manga/leercapituloController");
+const leercapituloController = require("../../controllers/manga/leercapituloController");
 
 router.get("/home", leercapituloController.home);
 router.get("/trends", leercapituloController.trends);
