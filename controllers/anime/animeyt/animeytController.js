@@ -59,6 +59,7 @@ exports.getAnimeInfo = (req, res) => {
             animeInfo.chapterList.push({
                 chapter: $(el).find(".epl-title").text().trim(),
                 date: $(el).find(".epl-date").text().trim(),
+                chapterNumber: chapterListHtml.length - _idx,
                 chapterUrl: $(el).find("a").attr("href")
             });
         });

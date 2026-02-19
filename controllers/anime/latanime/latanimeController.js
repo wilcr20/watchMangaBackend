@@ -38,6 +38,7 @@ exports.getAnimeInfo = (req, res) => {
         var linksListHtml = $("div.row a");
 
 
+        let chapterNumber = 1;
         linksListHtml.each((_idx, el) => {
             var url = $(el).attr("href");
             if (url.includes("episodio")) {
@@ -48,8 +49,10 @@ exports.getAnimeInfo = (req, res) => {
                 animeInfo.chapterList.push({
                     chapter: name,
                     date: null,
+                    chapterNumber: chapterNumber,
                     chapterUrl: url
                 });
+                chapterNumber++;
             }
 
         });

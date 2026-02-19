@@ -129,14 +129,17 @@ exports.getAnimeInfo = (req, res) => {
                 animeInfo.chapterList.push({
                     chapter: "Próximo capítulo: " + animeInfoList[3],
                     date: null,
+                    chapterNumber: null,
                     chapterUrl: null
                 });
             }
+
             for (let index = 0; index < listChapters.length; index++) {
                 const element = listChapters[index];
                 animeInfo.chapterList.push({
                     chapter: "Capítulo " + element[0],
                     date: null,
+                    chapterNumber: listChapters.length - index,
                     chapterUrl: req.body.animeUrl.replace("https://www3.animeflv.net/anime", "https://www3.animeflv.net/ver") + "-" + element[0]
                 });
 
