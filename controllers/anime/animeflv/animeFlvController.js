@@ -273,26 +273,14 @@ exports.ongoing = (req, res) => {
 }
 
 
-exports.getHtmlData = (req, res) => {
-    request(req.body.url, function (error, _response, body) {
-        if (!error) {
-            var $ = cheerio.load(body);
-            var scripts = $("script");
-            var scriptData = [];
-            scripts.each((_idx, el) => {
-                if ($(el).text().includes("p,a,c,k,e,d")) {
-                    scriptData = $(el).text().trim();
-                }
-            });
-            var data = {
-                script: scriptData,
-                website: constants.WEBSITE_NAME
-            };
-            res.send({ data: data });
-        }
-        else {
-            res.send(error);
-        }
-    });
+exports.testWebsite = (_, res) => {
+    cloudscraper.get("https://wwv.veranimes.net/").then((body) => {
+        var $ = cheerio.load(body);
+        let listItems = $(constants.UL_LIST_EPISODES_HOME);
+        var animeList = [];
 
+        res.send({ data: body });
+    }, (err) => {
+        res.send(err)
+    })
 }
