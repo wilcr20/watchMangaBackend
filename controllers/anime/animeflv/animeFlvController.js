@@ -276,8 +276,9 @@ exports.ongoing = (req, res) => {
 
 exports.testWebsite= (req, res) => {
     var options = {
-        // uri: "https://manhwascan.vip/", //si sirve
-        uri: " https://manhwaweb.com/",
+        uri: "https://otakuteca.com/",
+        //  uri: "https://manhwascan.vip/", //si sirve
+        // uri: " https://manhwaweb.com/", // no sirve
         timeout: 10000
     }
     cloudscraper.get(options).then((body) => {
