@@ -276,7 +276,7 @@ exports.ongoing = (req, res) => {
 
 exports.testWebsite= (req, res) => {
     var options = {
-        uri: "https://otakuteca.com/",
+        uri: "https://www.kumanga.com/mangalist?&page=1",
         //  uri: "https://manhwascan.vip/", //si sirve
         // uri: " https://manhwaweb.com/", // no sirve
         timeout: 10000
