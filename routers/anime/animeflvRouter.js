@@ -10,8 +10,10 @@ router.post("/SeeChapter", animeflvController.SeeChapter);
 router.post("/filterSearch", animeflvController.filterSearch);
 router.post("/movies", animeflvController.movies);
 router.post("/ongoing", animeflvController.ongoing);
-router.get("/testWebsite", animeflvController.testWebsite);
 
+
+router.get("/testWebsite", animeflvController.testWebsite);
+ 
 
 
 module.exports = router;

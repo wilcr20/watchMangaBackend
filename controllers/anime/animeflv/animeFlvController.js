@@ -111,6 +111,7 @@ exports.getAnimeInfo = (req, res) => {
         animeInfo.title = $("div.Container h1").text();
         animeInfo.description = $("div.Description").text().trim();
         animeInfo.imageUrl = constants.WEBSITE_URL + $("div.AnimeCover").find(constants.FIGURE_IMG).attr("src");
+        
         var relatedAnimeList = $("ul.ListAnmRel li");
         if (relatedAnimeList && relatedAnimeList.length > 0) {
             relatedAnimeList.each((idx, el) => {
@@ -273,14 +274,16 @@ exports.ongoing = (req, res) => {
 }
 
 
-exports.testWebsite = (_, res) => {
-    cloudscraper.get("https://wwv.veranimes.net/").then((body) => {
-        var $ = cheerio.load(body);
-        let listItems = $(constants.UL_LIST_EPISODES_HOME);
-        var animeList = [];
+exports.testWebsite= (req, res) => {
+    var options = {
+        uri: "https://manhwascan.vip/",
+        timeout: 10000
+    }
+    cloudscraper.get(options).then((body) => {
 
-        res.send({ data: body });
+
+        res.send({ html: body});
     }, (err) => {
         res.send(err)
-    })
+    });
 }
