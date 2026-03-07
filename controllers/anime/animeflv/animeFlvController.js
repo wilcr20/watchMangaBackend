@@ -1,7 +1,8 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
 const constants = require("./selectors")
-const request = require("request");
+const clo = require("cloudflare-scraper");
+
 
 exports.home = (_, res) => {
     cloudscraper.get(constants.WEBSITE_URL).then((body) => {
@@ -111,7 +112,7 @@ exports.getAnimeInfo = (req, res) => {
         animeInfo.title = $("div.Container h1").text();
         animeInfo.description = $("div.Description").text().trim();
         animeInfo.imageUrl = constants.WEBSITE_URL + $("div.AnimeCover").find(constants.FIGURE_IMG).attr("src");
-        
+
         var relatedAnimeList = $("ul.ListAnmRel li");
         if (relatedAnimeList && relatedAnimeList.length > 0) {
             relatedAnimeList.each((idx, el) => {
@@ -274,18 +275,31 @@ exports.ongoing = (req, res) => {
 }
 
 
-exports.testWebsite= (req, res) => {
-    var options = {
-        uri: "https://www.kumanga.com/mangalist?&page=1",
-        //  uri: "https://manhwascan.vip/", //si sirve
-        // uri: " https://manhwaweb.com/", // no sirve
-        timeout: 10000
-    }
-    cloudscraper.get(options).then((body) => {
+exports.testWebsite = (req, res) => {
+
+    (async () => {
+        try {
+            const response = await clo.default.get('https://zonatmo.com/');
+            res.send({ html: response.body });
+
+        } catch (error) {
+            res.send({ html: "" });
+            console.log(error);
+        }
+    })();
 
 
-        res.send({ html: body});
-    }, (err) => {
-        res.send(err)
-    });
+    // var options = {
+    //     uri: "https://www.kumanga.com/mangalist?&page=1",
+    //     //  uri: "https://manhwascan.vip/", //si sirve
+    //     // uri: " https://manhwaweb.com/", // no sirve
+    //     timeout: 10000
+    // }
+    // cloudscraper.get(options).then((body) => {
+
+
+    //     res.send({ html: body });
+    // }, (err) => {
+    //     res.send(err)
+    // });
 }
