@@ -276,30 +276,15 @@ exports.ongoing = (req, res) => {
 
 
 exports.testWebsite = (req, res) => {
-
-    (async () => {
-        try {
-            const response = await clo.default.get('https://animeav1.com/');
-            res.send({ html: response.body });
-
-        } catch (error) {
-            res.send({ html: "" });
-            console.log(error);
-        }
-    })();
-
-
-    // var options = {
-    //     uri: "https://www.kumanga.com/mangalist?&page=1",
-    //     //  uri: "https://manhwascan.vip/", //si sirve
-    //     // uri: " https://manhwaweb.com/", // no sirve
-    //     timeout: 10000
-    // }
-    // cloudscraper.get(options).then((body) => {
-
-
-    //     res.send({ html: body });
-    // }, (err) => {
-    //     res.send(err)
-    // });
+     var options = {
+       uri: 'https://animeav1.com/',
+         //  uri: "https://manhwascan.vip/", //si sirve
+         // uri: " https://manhwaweb.com/", // no sirve
+         timeout: 10000
+     }
+     cloudscraper.get(options).then((body) => {
+         res.send({ html: body });
+     }, (err) => {
+         res.send(err)
+     });
 }
