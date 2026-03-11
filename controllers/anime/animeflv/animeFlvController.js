@@ -279,7 +279,7 @@ exports.testWebsite = (req, res) => {
 
     (async () => {
         try {
-            const response = await clo.default.get('https://zonatmo.com/');
+            const response = await clo.default.get('https://animeav1.com/');
             res.send({ html: response.body });
 
         } catch (error) {
