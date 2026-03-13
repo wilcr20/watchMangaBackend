@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
 const constants = require("./selectors")
-const clo = require("cloudflare-scraper");
+const puppeteer = require('puppeteer')
 
 
 exports.home = (_, res) => {
@@ -275,9 +275,35 @@ exports.ongoing = (req, res) => {
 }
 
 
-exports.testWebsite = (req, res) => {
-     var options = {
-       uri: 'https://animeav1.com/',
+exports.testWebsite = async (req, res) => {
+
+    // First, we must launch a browser instance
+    const browser = await puppeteer.launch({
+        // Headless option allows us to disable visible GUI, so the browser runs in the "background"
+        // for development lets keep this to true so we can see what's going on but in
+        // on a server we must set this to true
+        headless: true,
+        // This setting allows us to scrape non-https websites easier
+        ignoreHTTPSErrors: true,
+    })
+    // then we need to start a browser tab
+    let page = await browser.newPage();
+    // and tell it to go to some URL
+    await page.goto('https://manhwa-latino.com/', {
+        waitUntil: 'domcontentloaded',
+    });
+    res.send({ data: await page.content()});
+    // print html content of the website
+    console.log(await page.content());
+    // close everything
+    await page.close();
+    await browser.close();
+
+
+    /*
+
+var options = {
+         uri: 'https://manhwa-latino.com/',
          //  uri: "https://manhwascan.vip/", //si sirve
          // uri: " https://manhwaweb.com/", // no sirve
          timeout: 10000
@@ -287,4 +313,6 @@ exports.testWebsite = (req, res) => {
      }, (err) => {
          res.send(err)
      });
+    */
+
 }
