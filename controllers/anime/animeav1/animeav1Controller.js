@@ -50,7 +50,7 @@ exports.search = (req, res) => {
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
             let display = $(el).text().trim().replace(/\n/g, '');
-            if (display !== "«" && display !== "»" && display.trim() != "...") {
+            if (display !== "«" && display !== "»" && display != "…") {
                 button.display = display;
                 button.url = $(el).attr("href") != undefined ? constants.WEBSITE_URL + $(el).attr("href") : null;
                 listNavigation.push(button);
