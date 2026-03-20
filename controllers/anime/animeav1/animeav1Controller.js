@@ -185,10 +185,11 @@ exports.SeeChapter = (req, res) => {
             for (let index = 0; index < servers.length; index++) {
                 const element = servers[index];
                 if (element.split(",")[0] && element.split(",")[1]) {
+                    console.log(element.split(",")[0]?.trim())
                     animeInfo.servers.push(
                         {
-                            "server": element.split(",")[0]?.trim().replace(/\n/g, ''),
-                            "url": element.split(",")[1].split("url:")[1]?.trim().replace("}", "").replace("]", "").trim()
+                            "server": element.split(",")[0]?.trim().replace('"', '').replace('\"', ''),
+                            "url": element.split(",")[1].split("url:")[1]?.trim().replace("}", "").replace("]", "").trim().replace('"', '').replace('\"', ''),
                         }
                     )
                 }
