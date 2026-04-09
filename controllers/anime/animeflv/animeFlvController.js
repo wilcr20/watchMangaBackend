@@ -279,7 +279,7 @@ exports.testWebsite = async (req, res) => {
 
 
 var options = {
-         uri: 'https://animeav1.com/media/sousou-no-frieren-2nd-season/9',
+         uri: 'https://www.anime-jl.net/',
          //  uri: "https://manhwascan.vip/", //si sirve
          // uri: " https://manhwaweb.com/", // no sirve
          timeout: 10000
