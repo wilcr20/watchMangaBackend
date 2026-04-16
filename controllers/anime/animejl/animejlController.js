@@ -15,7 +15,7 @@ exports.home = (_, res) => {
             anime.url = $(el).find("a").attr("href");
             let chapterNumber = $(el).find("span.Capi").text();
             anime.title = $(el).find("strong").text().replace(/\n/g, '');
-            anime.chapterNumber = chapterNumber.replace(" Episodio ", "");
+            anime.chapterNumber = chapterNumber.replace("Episodio ", "");
 
             anime.imageUrl = constants.WEBSITE_URL + "/" + $(el).find("span img").attr("src");
             animeList.push(anime);
