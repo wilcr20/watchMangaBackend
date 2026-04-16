@@ -11,16 +11,17 @@ exports.home = (_, res) => {
         var animeList = [];
         listItems.each((_idx, el) => {
 
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href");
             let chapterNumber = $(el).find("span.Capi").text();
-            anime.title = $(el).find("strong").text().replace(/\n/g, '') + " " + chapterNumber;
+            anime.title = $(el).find("strong").text().replace(/\n/g, '');
+            anime.chapterNumber = chapterNumber.replace(" Episodio ", "");
 
             anime.imageUrl = constants.WEBSITE_URL + "/" + $(el).find("span img").attr("src");
             animeList.push(anime);
 
         });
-        res.send({ data: animeList });
+        res.send({ data: animeList});
     }, (err) => {
         res.send(err)
     })
@@ -173,7 +174,7 @@ exports.SeeChapter = (req, res) => {
         var serversUrlList = body.split('iframe src="');
 
         serversNameList.each((index, el) => {
-            const server = serversUrlList[index+1];
+            const server = serversUrlList[index + 1];
             const serverUrl = server.split('"')[0]  //.includes("http")
             animeInfo.servers.push(
                 {

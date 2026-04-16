@@ -11,11 +11,14 @@ exports.home = (_, res) => {
         var animeList = [];
         listItems.each((_idx, el) => {
 
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
             let chapterNumber = $(el).find("div.bg-line.text-subs").text();
-            anime.title = $(el).find("header").text().replace(/\n/g, '') + " " + chapterNumber;
-
+            anime.title = $(el).find("header").text().replace(/\n/g, '');
+            if (chapterNumber.trim() != "") {
+                anime.chapterNumber = chapterNumber.replace("Episodio ", "");
+            }
+            anime.chapterNumber = chapterNumber
             anime.imageUrl = $(el).find("figure img").attr("src");
             animeList.push(anime);
 

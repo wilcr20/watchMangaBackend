@@ -11,13 +11,13 @@ exports.home = (_, res) => {
         var animeList = [];
         listItems.each((_idx, el) => {
 
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
             let chapterNumber = $(el).find("a span.Capi").text();
-            if (chapterNumber) {
-
+            if (chapterNumber.trim() != "") {
+                anime.chapterNumber = chapterNumber.replace("Episodio ", "");
             }
-            anime.title = $(el).find("a strong").text().replace(/\n/g, '') + " " + chapterNumber;
+            anime.title = $(el).find("a strong").text().replace(/\n/g, '');
             anime.imageUrl = constants.WEBSITE_URL + $(el).find("a img").attr("src").replace(constants.RESIZE_IMG, "");
             animeList.push(anime);
 
@@ -278,16 +278,16 @@ exports.ongoing = (req, res) => {
 exports.testWebsite = async (req, res) => {
 
 
-var options = {
-         uri: 'https://www.anime-jl.net/',
-         //  uri: "https://manhwascan.vip/", //si sirve
-         // uri: " https://manhwaweb.com/", // no sirve
-         timeout: 10000
-     }
-     cloudscraper.get(options).then((body) => {
-         res.send({ html: body });
-     }, (err) => {
-         res.send(err)
-     });
+    var options = {
+        uri: 'https://www.anime-jl.net/',
+        //  uri: "https://manhwascan.vip/", //si sirve
+        // uri: " https://manhwaweb.com/", // no sirve
+        timeout: 10000
+    }
+    cloudscraper.get(options).then((body) => {
+        res.send({ html: body });
+    }, (err) => {
+        res.send(err)
+    });
 
 }

@@ -13,7 +13,7 @@ exports.home = (_, res) => {
         listItems.each((_idx, el) => {
             let type = $(el).find(constants.DIV_TYPE).text();
             if (type != "Próximamente") {
-                var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+                var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
                 anime.url = $(el).find("a").attr("href")?.trim();
                 let chapterNumber = $(el).find("span._2y8kd").text()?.trim();
                 anime.title = $(el).find("div._2NNxg a").text()?.trim().replace(/\n/g, '') + " - " + chapterNumber;
@@ -159,7 +159,7 @@ exports.filterSearch = (req, res) => {
         var animeList = [];
         var buttonsNavigationHTMl = $("ul.pagination li");
         var listNavigation = [];
-        
+
         listItems.each((_idx, el) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href")?.trim();

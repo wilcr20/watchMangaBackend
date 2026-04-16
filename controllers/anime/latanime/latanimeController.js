@@ -9,14 +9,16 @@ exports.home = (_, res) => {
 
         let listItems = $(constants.DIV_LIST_HOME);
         var animeList = [];
-        console.log(listItems.length)
 
         listItems.each((_idx, el) => {
             let type = $(el).find(constants.DIV_TYPE).text();
             if (type != "Próximamente") {
-                var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+                var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
                 anime.url = $(el).find("a").attr("href")?.trim();
-                anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+                let chapterTitle = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+
+                anime.chapterNumber = chapterTitle.split(" - ")[0].replace("Episodio ", "")
+                anime.title = chapterTitle.split(" - ")[1]
                 anime.imageUrl = $(el).find("img").attr("data-src");
                 animeList.push(anime);
             }

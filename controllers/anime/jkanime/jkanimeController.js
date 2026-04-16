@@ -12,7 +12,7 @@ exports.home = (_, res) => {
         console.log(listItems.length)
 
         listItems.each((_idx, el) => {
-            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
             let chapterNumber = $(el).find("span.badge-primary").text().trim() || "";
 
             anime.url = $(el).find("div.card a").attr("href")?.trim();
