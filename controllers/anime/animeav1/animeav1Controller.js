@@ -15,10 +15,11 @@ exports.home = (_, res) => {
             anime.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
             let chapterNumber = $(el).find("div.bg-line.text-subs").text();
             anime.title = $(el).find("header").text().replace(/\n/g, '');
+
             if (chapterNumber.trim() != "") {
                 anime.chapterNumber = chapterNumber.replace("Episodio ", "");
             }
-            anime.chapterNumber = chapterNumber
+            // anime.chapterNumber = chapterNumber
             anime.imageUrl = $(el).find("figure img").attr("src");
             animeList.push(anime);
 
