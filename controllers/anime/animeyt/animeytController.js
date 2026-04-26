@@ -18,7 +18,7 @@ exports.home = (_, res) => {
 
                 anime.title = chapterTitle.split(" Capitulo ")[0] || "";
                 anime.chapterNumber = chapterTitle.split(" Capitulo ")[1] || null;
-                anime.imageUrl = $(el).find("img").attr("data-src");
+                anime.imageUrl = $(el).find("img").attr("src");
                 animeList.push(anime);
             }
         });
@@ -56,7 +56,7 @@ exports.getAnimeInfo = (req, res) => {
         const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
         animeInfo.title = $("h1.entry-title").eq(0).text();
         animeInfo.description = $("div.entry-content").eq(0).text().trim();
-        animeInfo.imageUrl = $("div.thumb img").attr("data-src");
+        animeInfo.imageUrl = $("div.thumb img").attr("src");
         var chapterListHtml = $("div.eplister ul li");
         chapterListHtml.each((_idx, el) => {
             animeInfo.chapterList.push({
@@ -141,7 +141,7 @@ exports.search = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href").trim();
             anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img.ts-post-image").attr("data-src").replace("?h=300", "");
+            anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?h=300", "");
             animeList.push(anime);
         });
         buttonsNavigationHTMl.each((_idx, el) => {
@@ -245,7 +245,7 @@ exports.filterSearch = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("img").attr("data-src");
+            anime.imageUrl = $(el).find("img").attr("src");
             animeList.push(anime);
 
         });
