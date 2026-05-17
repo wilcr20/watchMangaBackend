@@ -52,7 +52,7 @@ exports.search = (req, res) => {
             const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "novelcool" };
             manga.title = $(el).find("div.book-name").eq(0).text().trim();
             manga.mangaUrl = $(el).find("div.book-pic a").attr("href");
-            manga.imageUrl= $(el).find("div.book-pic a img").attr("lazy_url");
+            manga.imageUrl= $(el).find("div.book-pic a img").attr("src");
             manga.date = $(el).find("div.book-data-time").eq(0).text().trim();
             mangaList.push(manga);
         });
