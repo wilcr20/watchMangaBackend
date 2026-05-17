@@ -11,8 +11,8 @@ exports.home = (_, res) => {
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "novelcool" };
             manga.title = $(el).find("div.book-name").text().trim();
-            manga.imageUrl = $(el).find("div.book-pic a").attr("href");
-            manga.mangaUrl = $(el).find("div.book-pic a img").attr("lazy_url");
+            manga.mangaUrl = $(el).find("div.book-pic a").attr("href");
+            manga.imageUrl = $(el).find("div.book-pic a img").attr("lazy_url");
             manga.date = $(el).find("div.book-data-time").eq(0).text().trim();
             mangaList.push(manga);
         });
@@ -31,8 +31,8 @@ exports.trends = (_, res) => {
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "novelcool" };
             manga.title = $(el).find("div.book-name").eq(0).text().trim();
-            manga.imageUrl = $(el).find("div.book-pic a").attr("href");
-            manga.mangaUrl = $(el).find("div.book-pic a img").attr("lazy_url");
+            manga.mangaUrl = $(el).find("div.book-pic a").attr("href");
+            manga.imageUrl = $(el).find("div.book-pic a img").attr("lazy_url");
             manga.date = $(el).find("div.book-data-time").eq(0).text().trim();
             mangaList.push(manga);
         });
@@ -51,8 +51,8 @@ exports.search = (req, res) => {
         listItems.each((_idx, el) => {
             const manga = { title: "", imageUrl: "", date: "", mangaUrl: "", website: "novelcool" };
             manga.title = $(el).find("div.book-name").eq(0).text().trim();
-            manga.imageUrl = $(el).find("div.book-pic a").attr("href");
-            manga.mangaUrl = $(el).find("div.book-pic a img").attr("lazy_url");
+            manga.mangaUrl = $(el).find("div.book-pic a").attr("href");
+            manga.imageUrl= $(el).find("div.book-pic a img").attr("lazy_url");
             manga.date = $(el).find("div.book-data-time").eq(0).text().trim();
             mangaList.push(manga);
         });
