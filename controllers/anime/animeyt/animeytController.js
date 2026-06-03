@@ -29,10 +29,9 @@ exports.home = (_, res) => {
                         anime.title = chapterTitle.split(" Capitulo ")[0] || "";
                         anime.chapterNumber = chapterTitle.split(" Capitulo ")[1] || null;
                         anime.imageUrl = $(el).find("img").attr("src");
-                        if (anime.title.trim() != "") {
+                        // if (anime.title.trim() != "") {
                             animeList.push(anime);
-
-                        }
+                        // }
                     }
                 });
                 if (animeList) {
