@@ -1,31 +1,52 @@
 const cheerio = require("cheerio");
 const cloudscraper = require('cloudscraper');
 const constants = require("./selectors")
+const request = require('request');
 
 
 exports.home = (_, res) => {
-    cloudscraper.get(constants.WEBSITE_URL).then((body) => {
-        var $ = cheerio.load(body);
 
-        let listItems = $(constants.DIV_LIST_HOME);
-        var animeList = [];
-        listItems.each((_idx, el) => {
-            let type = $(el).find(constants.DIV_TYPE).text();
-            if (type != "Próximamente") {
-                var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
-                anime.url = $(el).find("a").attr("href")?.trim();
-                let chapterTitle = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+    let options = {
+        url: constants.WEBSITE_URL,
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
+        }
+    };
 
-                anime.title = chapterTitle.split(" Capitulo ")[0] || "";
-                anime.chapterNumber = chapterTitle.split(" Capitulo ")[1] || null;
-                anime.imageUrl = $(el).find("img").attr("src");
-                animeList.push(anime);
+    try {
+        request(options, function (err, resp, html) {
+            if (!err) {
+                const $ = cheerio.load(html);
+                let listItems = $(constants.DIV_LIST_HOME);
+                var animeList = [];
+                listItems.each((_idx, el) => {
+                    let type = $(el).find(constants.DIV_TYPE).text();
+                    if (type != "Próximamente") {
+                        var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
+                        anime.url = $(el).find("a").attr("href")?.trim();
+                        let chapterTitle = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+
+                        anime.title = chapterTitle.split(" Capitulo ")[0] || "";
+                        anime.chapterNumber = chapterTitle.split(" Capitulo ")[1] || null;
+                        anime.imageUrl = $(el).find("img").attr("src");
+                        if (anime.title.trim() != "") {
+                            animeList.push(anime);
+
+                        }
+                    }
+                });
+                if (animeList) {
+                    res.send({ data: animeList });
+                }
+            } else {
+                res.status(500).json({ error: 'Internal Server Error' });
             }
-        });
-        res.send({ data: animeList });
-    }, (err) => {
-        res.send(err)
-    })
+        })
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
 }
 
 exports.homeSeeMore = (_, res) => {
