@@ -143,8 +143,8 @@ exports.search = (req, res) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href")?.trim();
             anime.title = $(el).find("div.seriedetails h3")?.text().trim().replace(/\n/g, '');
-            anime.imageUrl = $(el).find("div.series img").attr("src");
-            if (anime.imageUrl == "https://latanime.org/public/img/anime.png") {
+            anime.imageUrl = $(el).find("div.serieimg img.shadow-sm").attr("src");
+            if (anime.imageUrl == "https://latanime.org/img/anime.png") {
                 anime.imageUrl = $(el).find("img").attr("data-src");
             }
 
