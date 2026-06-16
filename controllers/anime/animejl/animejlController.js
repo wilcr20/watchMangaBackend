@@ -111,7 +111,7 @@ exports.getAnimeInfo = (req, res) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], related: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
         animeInfo.title = $("h1.Title").text();
-        animeInfo.description = $("div.Description").text().trim();
+        animeInfo.description = $("div.Description p").eq(1).text().trim();
         animeInfo.imageUrl = $("div.AnimeCover").find("img").attr("src");
 
 

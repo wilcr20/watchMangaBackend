@@ -163,8 +163,14 @@ exports.SeeChapter = (req, res) => {
 exports.search = (req, res) => {
     cloudscraper.get(req.body.term).then((body) => {
         var $ = cheerio.load(body);
-        let listItems = $(constants.DIV_LIST_HOME);
+        let listItems = $("div.anime__page__content div.mb-4.d-flex")  //$(constants.DIV_LIST_HOME);
         var animeList = [];
+        console.log(listItems.length)
+
+        let str = body.split('var animes =')[1].split("var mode =")[0]
+        console.log(JSON.parse(str.trim()))
+
+
         var buttonsNavigationHTMl = $("ul.pagination li");
         var listNavigation = [];
         listItems.each((_idx, el) => {
@@ -190,7 +196,7 @@ exports.search = (req, res) => {
             }
         });
 
-        res.send({ data: animeList, buttons: listNavigation });
+        res.send({ hrml: str, data: animeList, buttons: listNavigation });
     }, (err) => {
         res.send(err)
     });

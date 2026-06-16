@@ -31,6 +31,9 @@ app.use(function (_req, res, next) {
     next();
 });
 
+app.use(cors());
+
+
 // manga 
 app.use("/manga/leercapitulo", leercapituloRuter);
 app.use("/manga/tumanhwas/", tumanhwasRouter);
@@ -38,16 +41,16 @@ app.use("/manga/tmomanga/", tmomangaRouter);
 app.use("/manga/lectortmo/", lectortmoRouter);
 app.use("/manga/lectormangalat/", lectorMangaLatRouter);
 app.use("/manga/manwhaLatino/", manwhaLatinoRouter)
-app.use("/manga/novelCool/",novelCoolRouter)
+app.use("/manga/novelCool/", novelCoolRouter)
 
 // anime
-app.use("/anime/animeflv", animeflvRouter )
-app.use("/anime/animeyt", animeytRouter )
-app.use("/anime/latanime", latanimeRouter )
-app.use("/anime/katanime", katanimeRouter )
-app.use("/anime/jkanime", jkanimeRouter )
-app.use("/anime/animeav1", animeav1Router )
-app.use("/anime/animejl", animejlRouter )
+app.use("/anime/animeflv", animeflvRouter)
+app.use("/anime/animeyt", animeytRouter)
+app.use("/anime/latanime", latanimeRouter)
+app.use("/anime/katanime", katanimeRouter)
+app.use("/anime/jkanime", jkanimeRouter)
+app.use("/anime/animeav1", animeav1Router)
+app.use("/anime/animejl", animejlRouter)
 
 
 
