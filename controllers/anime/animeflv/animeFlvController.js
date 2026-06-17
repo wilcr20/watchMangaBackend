@@ -171,27 +171,32 @@ exports.SeeChapter = (req, res) => {
     cloudscraper.get(options).then((body) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME }
-        let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
-        var breadcrumbHtml = $("nav.Brdcrmb a");
-        breadcrumbHtml.each((idx, el) => {
-            if (idx == 1) {
-                animeInfo.animeUrl = constants.WEBSITE_URL + $(el).attr("href");
-                animeInfo.title = $(el).text();
-            }
-        })
-        for (let index = 0; index < listServer.length; index++) {
-            const server = listServer[index];
-            animeInfo.servers.push(
-                {
-                    "server": server.title,
-                    "url": server.code
+        try {
+            let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
+            var breadcrumbHtml = $("nav.Brdcrmb a");
+            breadcrumbHtml.each((idx, el) => {
+                if (idx == 1) {
+                    animeInfo.animeUrl = constants.WEBSITE_URL + $(el).attr("href");
+                    animeInfo.title = $(el).text();
                 }
-            )
+            })
+            for (let index = 0; index < listServer.length; index++) {
+                const server = listServer[index];
+                animeInfo.servers.push(
+                    {
+                        "server": server.title,
+                        "url": server.code
+                    }
+                )
+            }
+            if (animeInfo.servers && animeInfo.servers.length > 0) {
+                animeInfo.defaultPlayer = animeInfo.servers[0].url;
+            }
+            res.send(animeInfo)
+        } catch (error) {
+            res.send(animeInfo)
         }
-        if (animeInfo.servers && animeInfo.servers.length > 0) {
-            animeInfo.defaultPlayer = animeInfo.servers[0].url;
-        }
-        res.send(animeInfo)
+
     }, (err) => {
         res.send(err)
     })
