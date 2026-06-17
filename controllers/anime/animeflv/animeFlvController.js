@@ -172,7 +172,6 @@ exports.SeeChapter = (req, res) => {
         var $ = cheerio.load(body);
         const animeInfo = { title: "", date: null, description: null, defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME }
         try {
-            let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
             var breadcrumbHtml = $("nav.Brdcrmb a");
             breadcrumbHtml.each((idx, el) => {
                 if (idx == 1) {
@@ -180,6 +179,9 @@ exports.SeeChapter = (req, res) => {
                     animeInfo.title = $(el).text();
                 }
             })
+
+            let listServer = JSON.parse(body.split('{"SUB":')[1]?.split("};")[0].trim().replace(";", ""))
+
             for (let index = 0; index < listServer.length; index++) {
                 const server = listServer[index];
                 animeInfo.servers.push(
