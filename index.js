@@ -18,6 +18,7 @@ const katanimeRouter = require("./routers/anime/katanimeRouter");
 const jkanimeRouter = require("./routers/anime/jkanimeRouter");
 const animeav1Router = require("./routers/anime/animeav1Router");
 const animejlRouter = require("./routers/anime/animejlRouter");
+const animeflvArRouter = require("./routers/anime/animeflvArRouter");
 
 
 const app = express();
@@ -52,7 +53,7 @@ app.use("/anime/katanime", katanimeRouter)
 app.use("/anime/jkanime", jkanimeRouter)
 app.use("/anime/animeav1", animeav1Router)
 app.use("/anime/animejl", animejlRouter)
-
+app.use("/anime/animeflv.ar",animeflvArRouter)
 
 
 app.get('/', function (_req, res) {
