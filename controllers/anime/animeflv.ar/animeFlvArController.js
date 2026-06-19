@@ -39,7 +39,6 @@ exports.search = (req, res) => {
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
         listItems.each((_idx, el) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href").trim();
@@ -47,6 +46,9 @@ exports.search = (req, res) => {
             anime.imageUrl = $(el).find("a img").attr("src")
             animeList.push(anime);
         });
+
+
+        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
 
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
@@ -77,7 +79,6 @@ exports.filterSearch = (req, res) => {
         var animeList = [];
         var listNavigation = [];
 
-        var buttonsNavigationHTMl = $("ul.pagination li:not(.active)");
         listItems.each((_idx, el) => {
             var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
             anime.url = $(el).find("a").attr("href").trim();
@@ -85,14 +86,18 @@ exports.filterSearch = (req, res) => {
             anime.imageUrl = $(el).find("a img").attr("src")
             animeList.push(anime);
         });
+
+        var buttonsNavigationHTMl = $(constants.DIV_PAGINATION);
+
         buttonsNavigationHTMl.each((_idx, el) => {
             var button = { display: null, url: null };
-            let display = $(el).find("a").text().trim().replace(/\n/g, '');
-            if (display !== "«" && display !== "»" && display != "") {
+            let display = $(el).text().trim().replace(/\n/g, '');
+            if (!display.includes("«") && !display.includes("»")) {
                 button.display = display;
-                button.url = constants.WEBSITE_URL + $(el).find("a").attr("href");
+                button.url = $(el).attr("href");
                 listNavigation.push(button);
             }
+
         });
 
         res.send({ data: animeList, buttons: listNavigation });
