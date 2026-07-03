@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors'); 
+const cloudscraper = require('cloudscraper');
 
 // manga
 const leercapituloRuter = require("./routers/manga/leercapituloRouter");
@@ -19,6 +20,7 @@ const jkanimeRouter = require("./routers/anime/jkanimeRouter");
 const animeav1Router = require("./routers/anime/animeav1Router");
 const animejlRouter = require("./routers/anime/animejlRouter");
 const animeflvArRouter = require("./routers/anime/animeflvArRouter");
+const tioanimeArRouter = require("./routers/anime/tioanimeRouter");
 
 
 const app = express();
@@ -35,6 +37,15 @@ app.use(function (_req, res, next) {
 
 app.use(cors());
 
+
+// Validate if is possible to scrape the html from the url
+app.post('/testWebsite', function (req, res) {
+    cloudscraper.get(req.body.url).then((body) => {
+        res.send({ htmlView: body });
+    }, (err) => {
+        res.send(err);
+    })
+});
 
 // manga 
 app.use("/manga/leercapitulo", leercapituloRuter);
@@ -54,7 +65,7 @@ app.use("/anime/jkanime", jkanimeRouter)
 app.use("/anime/animeav1", animeav1Router)
 app.use("/anime/animejl", animejlRouter)
 app.use("/anime/animeflv.ar",animeflvArRouter)
-
+app.use("/anime/tioanime",tioanimeArRouter)
 
 app.get('/', function (_req, res) {
     console.log("Got a GET request for the homepage");
