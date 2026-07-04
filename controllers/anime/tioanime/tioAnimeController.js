@@ -118,7 +118,7 @@ exports.getAnimeInfo = (req, res) => {
 
             for (let index = 0; index < episodeList.length; index++) {
                 animeInfo.chapterList.push({
-                    chapter: episodeList[index],
+                    chapter: "Capítulo " + episodeList[index],
                     date: episodeDates[index],
                     chapterNumber: episodeList[index],
                     chapterUrl: req.body.animeUrl.replace("/anime/", "/ver/") + "-" + episodeList[index]
