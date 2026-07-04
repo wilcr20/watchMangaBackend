@@ -39,7 +39,7 @@ app.use(cors());
 
 
 // Validate if is possible to scrape the html from the url
-app.post('/testWebsite', function (req, res) {
+app.post('/anime/testWebsite', function (req, res) {
     cloudscraper.get(req.body.url).then((body) => {
         res.send({ htmlView: body });
     }, (err) => {
