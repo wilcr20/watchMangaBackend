@@ -68,7 +68,7 @@ app.use("/anime/animeflv.ar",animeflvArRouter)
 app.use("/anime/tioanime",tioanimeArRouter)
 
 app.get('/', function (_req, res) {
-    console.log("Got a GET request for the homepage");
+    console.log("Got a GET request for the homepage -- new version");
     res.send('Hello GET');
 });
 
