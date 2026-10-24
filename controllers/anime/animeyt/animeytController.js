@@ -1,305 +1,258 @@
 const cheerio = require("cheerio");
-const cloudscraper = require('cloudscraper');
 const constants = require("./selectors")
 const request = require('request');
+const axios = require('axios');
 
-
-exports.home = (_, res) => {
-    let options = {
-        url: constants.WEBSITE_URL,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
+exports.home = async (_, res) => {
 
     try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                let listItems = $(constants.DIV_LIST_HOME);
-                var animeList = [];
-                listItems.each((_idx, el) => {
-                    let type = $(el).find(constants.DIV_TYPE).text();
-                    if (type != "Próximamente") {
-                        var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
-                        anime.url = $(el).find("a").attr("href")?.trim();
-                        let chapterTitle = $(el).find("h2").text()?.trim().replace(/\n/g, '');
+        const response = await axios.get(constants.WEBSITE_URL, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
 
-                        anime.title = chapterTitle.split(" Capitulo ")[0] || "";
-                        anime.chapterNumber = chapterTitle.split(" Capitulo ")[1] || null;
-                        anime.imageUrl = $(el).find("img").attr("src");
-                        animeList.push(anime);
-                    }
-                });
-                if (animeList) {
-                    res.send({ data: animeList });
-                }
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        const body = response.data;
+        var $ = cheerio.load(body);
+        let listItems = $(constants.DIV_LIST_HOME);
+        var animeList = [];
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", chapterNumber: null, website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").eq(0).attr("href")?.trim();
+
+            anime.title = $(el).find("h3").text()?.trim();
+            anime.chapterNumber = $(el).find("span.aniyt-card-code").text()?.trim().replace('EP ', '');
+            anime.imageUrl = $(el).find("img").attr("data-srcset")?.split(",")[0] || null;
+            animeList.push(anime);
+
+        });
+        if (animeList) {
+            res.send({ data: animeList, count: animeList.length });
+        }
+    }
+    catch (error) {
+        res.send(error);
+    }
+}
+
+
+exports.getAnimeInfo = async (req, res) => {
+
+    try {
+        const response = await axios.get(req.body.animeUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
+
+        const body = response.data;
+        var $ = cheerio.load(body);
+        const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
+        animeInfo.title = $("h1.aniyt-series-title-line").eq(0).text();
+        animeInfo.description = $(".aniyt-detail-synopsis").eq(0).text().trim();
+        animeInfo.imageUrl = $(".aniyt-detail-poster img").attr("data-src");
+
+        var chapterListHtml = $(".aniyt-episode-grid article");
+        chapterListHtml.each((_idx, el) => {
+            animeInfo.chapterList.push({
+                chapter: $(el).find(".aniyt-episode-body a").text().trim(),
+                date: $(el).find(".aniyt-episode-card-meta time").text().trim(),
+                chapterNumber: chapterListHtml.length - _idx,
+                chapterUrl: $(el).find(".aniyt-episode-body a").attr("href")
+            });
+        });
+
+        $('dl.aniyt-meta-list dt:contains("Géneros")')
+            .next('dd')
+            .find('a')
+            .each((_i, element) => {
+                animeInfo.genreList.push($(element).text().trim());
+            });
+
+        if (animeInfo) {
+            res.send({ data: animeInfo });
+        }
+    }
+    catch (error) {
+        res.send(error);
     }
 
 
 }
 
-
-exports.getAnimeInfo = (req, res) => {
-    let options = {
-        url: req.body.animeUrl,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
+exports.SeeChapter = async (req, res) => {
 
     try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                const animeInfo = { title: "", description: "", imageUrl: "", genreList: [], chapterList: [], state: "", website: constants.WEBSITE_NAME }
-                animeInfo.title = $("h1.entry-title").eq(0).text();
-                animeInfo.description = $("div.entry-content").eq(0).text().trim();
-                animeInfo.imageUrl = $("div.thumb img").attr("src");
-                var chapterListHtml = $("div.eplister ul li");
+        const response = await axios.get(req.body.animeUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
 
-                chapterListHtml.each((_idx, el) => {
-                    animeInfo.chapterList.push({
-                        chapter: $(el).find(".epl-title").text().trim(),
-                        date: $(el).find(".epl-date").text().trim(),
-                        chapterNumber: chapterListHtml.length - _idx,
-                        chapterUrl: $(el).find("a").attr("href")
-                    });
-                });
-                var genreListHtml = $("div.genxed a");
-                genreListHtml.each((_idx, el) => {
-                    animeInfo.genreList.push({ genre: $(el).text().trim() });
-                });
+        const body = response.data;
+        var $ = cheerio.load(body);
+        const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", animeUrl: "", servers: [], website: constants.WEBSITE_NAME }
 
-                if (animeInfo) {
-                    res.send({ data: animeInfo });
-                }
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
+        animeInfo.description = $(".aniyt-watch-synopsis-scroll").find('p').eq(0).text().trim();
+        animeInfo.date = null;
+        animeInfo.title = $('h1.aniyt-watch-post-title').text().trim();
+        animeInfo.animeUrl = $('.aniyt-watch-series-poster').attr('href');
+
+        var iframeUrl = $(".aniyt-player-stage").find('iframe').eq(0).attr('data-src') || null;
+        animeInfo.servers.push(
+            {
+                "server": 'Defaut',
+                "url": iframeUrl
             }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        )
+
+        if (animeInfo.servers && animeInfo.servers.length > 0) {
+            animeInfo.defaultPlayer = animeInfo.servers[0].url;
+        }
+
+        if (animeInfo) {
+            res.send({ data: animeInfo });
+        }
     }
+    catch (error) {
+        res.send(error);
+    }
+
 
 }
 
-exports.SeeChapter = (req, res) => {
-    let options = {
-        url: req.body.animeUrl,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
-
+exports.search = async (req, res) => {
     try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                const animeInfo = { title: "", date: "", description: "", defaultPlayer: "", servers: [], website: constants.WEBSITE_NAME }
+        const response = await axios.get(req.body.term, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
 
-                animeInfo.description = $("div.bixbox.mctn p").eq(0).text().trim();
-                animeInfo.date = $("span.year span.updated").text()?.trim().split("Autor")[0];
-                var animeInfoData = $("div.ts-breadcrumb ol li");
-                var serversData = $("select.mirror option");
-                animeInfoData.each((idx, el) => {
-                    if (idx == 1) {
-                        animeInfo.animeUrl = $(el).find("a").attr("href");
-                        animeInfo.title = $(el).find("a span").text();
-                    }
-                })
-                serversData.each((idx, el) => {
-                    if (idx > 0) {
-                        let iframeHtml = atob($(el).attr("value"));
-                        let url = $(iframeHtml).attr("src");
-                        let serverName = $(el).text().trim().replace(/\n/g, '');
-                        let urlFixed = "";
-                        if (url) {
-                            if ((serverName == "Omega" || serverName == "Lions" || serverName == "Moon")
-                                && !url.includes("http") && !url.includes("ok.ru")) {
-                                urlFixed = constants.WEBSITE_URL + url;
-                            } else if (url.includes("ok.ru") || url.includes("sendvid")) {
-                                urlFixed = "https:" + url;
-                            }
-                            else {
-                                urlFixed = url;
-                            }
-                            urlFixed = urlFixed.replace("http:", "https:");
-                            if (true) {
-                                animeInfo.servers.push(
-                                    {
-                                        "server": serverName,
-                                        "url": urlFixed
-                                    }
-                                )
-                            }
-                        }
+        const body = response.data;
+        var $ = cheerio.load(body);
+        let listItems = $(constants.DIV_LIST_ANIMES);
+        var animeList = [];
+        var listNavigation = [];
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find(".aniyt-anime-body a").attr("href").trim();
+            anime.title = $(el).find(".aniyt-anime-body a").text().trim();
+            anime.imageUrl = $(el).find(".aniyt-anime-poster img").attr("srcset").split(',')[0] || null;
+            animeList.push(anime);
+        });
 
+        var buttonsNavigationHTMl = $(".nav-links .page-numbers");
+        buttonsNavigationHTMl.each((_idx, el) => {
+            var button = { display: null, url: null };
+            button.display = $(el).text().trim().replace(/\n/g, '');
+            button.url = $(el).attr("href");
+            listNavigation.push(button);
 
-                    }
-                })
-                if (animeInfo.servers && animeInfo.servers.length > 0) {
-                    animeInfo.defaultPlayer = animeInfo.servers[0].url;
-                }
+        });
 
-                if (animeInfo) {
-                    res.send({ data: animeInfo });
-                }
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.send({ data: animeList, buttons: listNavigation });
     }
-
-}
-
-exports.search = (req, res) => {
-    let options = {
-        url: req.body.term,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
-
-
-    try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                let listItems = $(constants.DIV_LIST_ANIMES);
-                var animeList = [];
-                var buttonsNavigationHTMl = $("div.hpage a");
-                var listNavigation = [];
-                listItems.each((_idx, el) => {
-                    var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
-                    anime.url = $(el).find("a").attr("href").trim();
-                    anime.title = $(el).find("a").attr("title").trim().replace(/\n/g, '');
-                    anime.imageUrl = $(el).find("img.ts-post-image").attr("src").replace("?h=300", "");
-                    animeList.push(anime);
-                });
-                buttonsNavigationHTMl.each((_idx, el) => {
-                    var button = { display: null, url: null };
-                    let display = $(el).text().trim().replace(/\n/g, '');
-                    button.display = display;
-                    button.url = "https://animeytx.net/tv/" + $(el).attr("href");
-                    listNavigation.push(button);
-
-                });
-
-                res.send({ data: animeList, buttons: listNavigation });
-                // if (animeList) {
-                //     res.send({ data: animeList });
-                // }
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+    catch (error) {
+        res.send(error);
     }
 
 }
 
 
-exports.directory = (req, res) => {
-
-    let options = {
-        url: req.body.url,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
-
+exports.directory = async (req, res) => {
 
     try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                var buttonsNavigationHTMl = $("div.pagination a.page-numbers");
-                var listNavigation = [];
+        const response = await axios.get(req.body.url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
 
-                let listItems = $(constants.DIV_LIST_ANIMES);
-                var animeList = [];
+        const body = response.data;
+        var $ = cheerio.load(body);
+        var listNavigation = [];
 
-                listItems.each((_idx, el) => {
-                    var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
-                    anime.url = $(el).find("a").attr("href")?.trim();
-                    anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
-                    anime.imageUrl = $(el).find("img").attr("src");
-                    animeList.push(anime);
-                });
+        let listItems = $(constants.DIV_LIST_ANIMES);
+        var animeList = [];
 
-                buttonsNavigationHTMl.each((_idx, el) => {
-                    var button = { display: null, url: null };
-                    let display = $(el).text().trim().replace(/\n/g, '');
-                    if (!display.includes("«") && !display.includes("»")) {
-                        button.display = display;
-                        button.url = $(el).attr("href");
-                        listNavigation.push(button);
-                    }
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").attr("href")?.trim();
+            anime.title = $(el).find(".aniyt-anime-body h3").text()?.trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img").attr("data-src");
+            animeList.push(anime);
+        });
 
-                });
+        var buttonsNavigationHTMl = $(".nav-links .page-numbers");
+        buttonsNavigationHTMl.each((_idx, el) => {
+            var button = { display: null, url: null };
+            button.display = $(el).text().trim().replace(/\n/g, '');
+            button.url = $(el).attr("href");
+            listNavigation.push(button);
+        });
 
-                res.send({ data: animeList, buttons: listNavigation });
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.send({ data: animeList, buttons: listNavigation });
     }
+    catch (error) {
+        res.send(error);
+    }
+
 }
 
 
-exports.filterSearch = (req, res) => {
-    let options = {
-        url: req.body.url,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
-        }
-    };
-
-
+exports.filterSearch = async (req, res) => {
     try {
-        request(options, function (err, resp, html) {
-            if (!err) {
-                const $ = cheerio.load(html);
-                let listItems = $(constants.DIV_LIST_ANIMES);
-                var animeList = [];
-                var buttonsNavigationHTMl = $("div.hpage a");
-                var listNavigation = [];
+        const response = await axios.get(req.body.url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3'
+            },
+            timeout: 10000
+        });
 
-                listItems.each((_idx, el) => {
-                    var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
-                    anime.url = $(el).find("a").attr("href")?.trim();
-                    anime.title = $(el).find("h2").text()?.trim().replace(/\n/g, '');
-                    anime.imageUrl = $(el).find("img").attr("src");
-                    animeList.push(anime);
+        const body = response.data;
+        var $ = cheerio.load(body);
+        let listItems = $(constants.DIV_LIST_ANIMES);
+        var animeList = [];
+        var listNavigation = [];
 
-                });
-                buttonsNavigationHTMl.each((_idx, el) => {
-                    var button = { display: null, url: null };
-                    let display = $(el).text().trim().replace(/\n/g, '');
-                    button.display = display;
-                    button.url = "https://animeytx.net/tv/" + $(el).attr("href");
-                    listNavigation.push(button);
+        listItems.each((_idx, el) => {
+            var anime = { title: "", imageUrl: "", url: "", website: constants.WEBSITE_NAME };
+            anime.url = $(el).find("a").attr("href")?.trim();
+            anime.title = $(el).find(".aniyt-anime-body h3").text()?.trim().replace(/\n/g, '');
+            anime.imageUrl = $(el).find("img").attr("data-src");
+            animeList.push(anime);
 
-                });
-                res.send({ data: animeList, buttons: listNavigation });
-            } else {
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        });
+        var buttonsNavigationHTMl = $(".nav-links .page-numbers");
+        buttonsNavigationHTMl.each((_idx, el) => {
+            var button = { display: null, url: null };
+            button.display = $(el).text().trim().replace(/\n/g, '');
+            button.url = $(el).attr("href");
+            listNavigation.push(button);
+
+        });
+        res.send({ data: animeList, buttons: listNavigation });
+    }
+    catch (error) {
+        res.send(error);
     }
 
 }
